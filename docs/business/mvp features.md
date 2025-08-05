@@ -2,14 +2,15 @@
 
 ## Overview
 
-This document outlines the essential features and functionalities for the Livrili MVP, operating as a single-supplier B2B platform with two main applications:
+This document outlines the essential features and functionalities for the Livrili MVP, operating as a single-supplier B2B platform with two distinct portal applications:
 
-1. Admin Portal/Application (Internal Operations)
-2. Users Portal/Application (Retailers Only)
+1. **Admin Portal** - Internal administration and operations management system
+2. **Retail Portal** - Customer-facing application for retailers to place orders and manage accounts
 
 ---
 
-## 1. Admin Portal/Application
+## 1. Admin Portal
+**Purpose**: Internal administration and operations management system for Livrili staff
 
 ### 📊 Core Management Features
 
@@ -146,9 +147,10 @@ This document outlines the essential features and functionalities for the Livril
 
 ---
 
-## 2. Users Portal/Application
+## 2. Retail Portal
+**Purpose**: Customer-facing application for retailers to browse products, place orders, and manage their accounts
 
-### 🏪 For Retailers (Buyers)
+### 🏪 Retailer Features
 
 #### Onboarding & Profile
 
@@ -236,7 +238,7 @@ This document outlines the essential features and functionalities for the Livril
 
 ---
 
-## 🔧 Technical Considerations for MVP
+## 🔧 Technical Considerations for Both Portals
 
 ### Mobile-First Approach
 
@@ -299,9 +301,19 @@ This document outlines the essential features and functionalities for the Livril
 
 **Focus: Core Functionality**
 
+**Admin Portal:**
 - ✅ Basic admin portal with user management
 - ✅ Product catalog setup and management
-- ✅ Retailer registration and simple ordering
+- ✅ Order processing dashboard
+- ✅ Basic reporting functionality
+
+**Retail Portal:**
+- ✅ Retailer registration and authentication
+- ✅ Product browsing and ordering
+- ✅ Basic order tracking
+- ✅ Account management interface
+
+**Shared Infrastructure:**
 - ✅ Cash on delivery setup
 - ✅ Basic SMS notifications
 
@@ -309,24 +321,48 @@ This document outlines the essential features and functionalities for the Livril
 
 **Focus: Operational Efficiency**
 
-- ✅ Automated order workflow
-- ✅ Credit system implementation
+**Admin Portal:**
+- ✅ Automated order workflow management
 - ✅ Driver assignment and tracking
 - ✅ Analytics dashboard (basic metrics)
+- ✅ Credit management tools
+
+**Retail Portal:**
+- ✅ Credit system integration
+- ✅ Enhanced ordering features
+- ✅ Order history and reordering
+
+**Shared Infrastructure:**
 - ✅ WhatsApp integration
 
 ## 📝 Notes for Development
 
-1. **Start Simple**: Focus on core order flow first
-2. **Mobile-First**: Prioritize mobile experience for retailers
-3. **Localization**: Build with Arabic/French/English from day one
-4. **Shared Accounts**: Design for multiple users per retailer account
-5. **Feedback Loop**: Implement user feedback collection early
-6. **Scalability**: Design database and architecture for growth
-7. **Analytics**: Implement tracking from the beginning
-8. **Support**: Build robust support system early
-9. **Activity Tracking**: Log all actions for shared account accountability
+### Portal-Specific Considerations
+
+**Admin Portal:**
+1. **Desktop-First**: Optimize for desktop/tablet use by operations staff
+2. **Real-time Updates**: Implement live dashboard updates and notifications
+3. **Bulk Operations**: Design for handling multiple orders and users efficiently
+4. **Advanced Filtering**: Comprehensive search and filtering across all data
+
+**Retail Portal:**
+1. **Mobile-First**: Prioritize mobile experience for retailers
+2. **Offline Capability**: Cache essential features for unreliable connectivity
+3. **Simple Navigation**: Streamlined interface focused on ordering workflow
+4. **Quick Actions**: Implement shortcuts for frequently used features
+
+### Shared Development Guidelines
+
+1. **Start Simple**: Focus on core order flow connecting both portals
+2. **Localization**: Build with Arabic/French/English from day one
+3. **Shared Accounts**: Design for multiple users per retailer account
+4. **Feedback Loop**: Implement user feedback collection early
+5. **Scalability**: Design database and architecture for growth
+6. **Analytics**: Implement tracking from the beginning for both portals
+7. **Support**: Build robust support system accessible from both portals
+8. **Activity Tracking**: Log all actions for shared account accountability
+9. **Consistent Data**: Ensure real-time synchronization between portals
 
 ---
 
-_This MVP feature set is designed for a single-supplier B2B platform model, focusing on direct distribution to retailers with cash-based transactions and credit management. Features can be adjusted based on user feedback and market validation._
+_This MVP feature set is designed for a single-supplier B2B platform model with two distinct portals: an Admin Portal for internal operations management and a Retail Portal for customer-facing interactions. The architecture focuses on direct distribution to retailers with cash-based transactions and credit management. Features can be adjusted based on user feedback and market validation._

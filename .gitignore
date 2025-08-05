@@ -45,6 +45,17 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*.local
+!.env.example
+apps/*/.env
+apps/*/.env.local
+apps/*/.env.*.local
+
+# Build outputs and cache
+.next/
+.turbo/
+node_modules/
+TODO_*.md
 
 # Logs
 logs/
@@ -91,3 +102,39 @@ public/uploads/
 *.pem
 *.key
 .secrets/
+
+# Database migration and test scripts with credentials
+apply-*.js
+test-*.js
+verify-*.js
+check-*.js
+create-*.js
+disable-*.js
+fix-*.js
+*.sql
+final-*.js
+manual-*.md
+essential-*.sql
+financial-*.md
+
+# Temporary task and implementation summaries
+*_SUMMARY.md
+*_IMPLEMENTATION*.md
+*_FIX*.md
+*_INSTRUCTIONS.md
+*_SETUP.md
+*_COMPLETE.md
+*_VERIFICATION.md
+*_PLAN.md
+TODO_*.md
+TAGS_*.md
+RLS_*.md
+RTL_*.md
+SECURITY_*.md
+DELIVERY_*.md
+FINANCIAL_*.md
+DELIGHT_*.md
+COMMUNICATIONS_*.md
+DASHBOARD_*.md
+RETAILER_*.md
+RETAILERS_*.md
