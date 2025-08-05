@@ -1,0 +1,41 @@
+{
+  "name": "@livrili/retail-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3002",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@livrili/ui": "*",
+    "@livrili/database": "*",
+    "@livrili/api": "*",
+    "@livrili/auth": "*",
+    "@livrili/i18n": "*",
+    "@livrili/utils": "*",
+    "@tanstack/react-query": "^5.62.10",
+    "@trpc/client": "^11.0.0-rc.678",
+    "@trpc/react-query": "^11.0.0-rc.678",
+    "@trpc/server": "^11.0.0-rc.678",
+    "@trpc/next": "^11.0.0-rc.678",
+    "next": "15.4.5",
+    "next-pwa": "^5.6.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sonner": "^1.7.0"
+  },
+  "devDependencies": {
+    "@livrili/eslint-config": "*",
+    "@livrili/typescript-config": "*",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2"
+  }
+}
