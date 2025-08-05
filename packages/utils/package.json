@@ -1,0 +1,20 @@
+{
+  "name": "@livrili/utils",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0"
+  },
+  "devDependencies": {
+    "@livrili/eslint-config": "*",
+    "@livrili/typescript-config": "*",
+    "typescript": "^5.7.2"
+  }
+}
