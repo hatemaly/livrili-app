@@ -1,0 +1,11 @@
+# Ignore artifacts:
+build
+coverage
+dist
+.next
+.turbo
+node_modules
+
+# Ignore specific files:
+*.config.js
+*.config.ts
