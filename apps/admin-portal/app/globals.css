@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Livrili Brand Colors */
+    --livrili-prussian: 201 100% 14%;
+    --livrili-fire: 355 83% 41%;
+    --livrili-air: 207 35% 58%;
+    --livrili-barn: 0 100% 24%;
+    --livrili-papaya: 34 75% 91%;
+
+    /* Default theme */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 201 100% 14%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 34 75% 91%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 207 35% 58%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 355 83% 41%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 201 100% 14%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 207 35% 58%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 207 35% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Font family utilities */
+  .font-inter {
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+  
+  .font-arabic {
+    font-family: var(--font-cairo), 'Noto Sans Arabic', system-ui, sans-serif;
+  }
+
+  /* RTL Support */
+  [dir="rtl"] {
+    text-align: right;
+  }
+  
+  [dir="ltr"] {
+    text-align: left;
+  }
+
+  /* Arabic Typography */
+  .arabic {
+    font-family: var(--font-cairo), 'Noto Sans Arabic', system-ui, sans-serif;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+  }
+
+  /* RTL-specific margins and padding overrides */
+  [dir="rtl"] .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  
+  [dir="rtl"] .mr-auto {
+    margin-right: 0;
+    margin-left: auto;
+  }
+  
+  [dir="rtl"] .text-left {
+    text-align: right;
+  }
+  
+  [dir="rtl"] .text-right {
+    text-align: left;
+  }
+
+  /* RTL-specific border radius */
+  [dir="rtl"] .rounded-l {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+  
+  [dir="rtl"] .rounded-r {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+
+  /* Input and form RTL support */
+  [dir="rtl"] input[type="text"],
+  [dir="rtl"] input[type="email"],
+  [dir="rtl"] input[type="password"],
+  [dir="rtl"] textarea {
+    text-align: right;
+  }
+  
+  [dir="rtl"] input[type="number"] {
+    text-align: left; /* Numbers should remain LTR */
+  }
+
+  /* Navigation and menu RTL support */
+  [dir="rtl"] .nav-item {
+    flex-direction: row-reverse;
+  }
+  
+  [dir="rtl"] .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+}

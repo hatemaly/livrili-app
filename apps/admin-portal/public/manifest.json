@@ -1,0 +1,26 @@
+{
+  "name": "Livrili Admin Portal",
+  "short_name": "Livrili Admin",
+  "description": "Internal administration and operations management system for Livrili's B2B marketplace",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#003049",
+  "theme_color": "#003049",
+  "icons": [
+    {
+      "src": "/livrili-favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/livrili-icon-square.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/livrili-icon-square.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
