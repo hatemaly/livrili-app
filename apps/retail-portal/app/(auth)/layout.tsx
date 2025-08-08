@@ -1,3 +1,7 @@
+'use client'
+
+// Guest guard not needed for auth pages - they're already public
+
 export default function AuthLayout({
   children,
 }: {

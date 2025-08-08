@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     apple: '/livrili-favicon.png',
   },
   manifest: '/manifest.json',
-  themeColor: '#003049',
 }
 
 export default function RootLayout({
@@ -36,6 +35,9 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
+      <head>
+        <meta name="theme-color" content="#003049" />
+      </head>
       <body className={`${inter.variable} ${cairo.variable} font-inter`} suppressHydrationWarning>
         <AdminLanguageProvider>
           <TRPCProvider>{children}</TRPCProvider>

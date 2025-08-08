@@ -1,6 +1,6 @@
+import { appRouter, createAppContext } from '@livrili/api'
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { type NextRequest } from 'next/server'
-import { appRouter, createAppContext } from '@livrili/api'
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({

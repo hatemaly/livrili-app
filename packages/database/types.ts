@@ -17,7 +17,20 @@ interface BaseEntity {
   updated_at: string
 }
 
-// User entity
+// User profile entity (extends Supabase auth.users)
+export interface UserProfile {
+  id: string // References auth.users.id
+  username?: string
+  full_name?: string
+  role: UserRole
+  retailer_id?: string
+  preferred_language: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+// Legacy User interface for backward compatibility
 export interface User extends BaseEntity {
   username: string
   full_name?: string
@@ -180,7 +193,7 @@ export interface UserSession {
 // Extended types with relations
 export interface OrderWithDetails extends Order {
   retailer?: Retailer
-  created_by_user?: Pick<User, 'id' | 'username' | 'full_name'>
+  created_by_user?: Pick<UserProfile, 'id' | 'username' | 'full_name'>
   items?: (OrderItem & {
     product?: Product
   })[]
@@ -188,7 +201,7 @@ export interface OrderWithDetails extends Order {
 }
 
 export interface RetailerWithDetails extends Retailer {
-  users?: User[]
+  user_profiles?: UserProfile[]
   recent_orders?: Pick<Order, 'id' | 'order_number' | 'total_amount' | 'status' | 'created_at'>[]
   recent_payments?: Pick<Payment, 'id' | 'amount' | 'payment_type' | 'payment_method' | 'status' | 'created_at'>[]
 }

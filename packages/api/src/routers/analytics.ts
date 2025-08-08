@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, adminProcedure, protectedProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { observable } from '@trpc/server/observable'
 
@@ -83,10 +83,10 @@ export const analyticsRouter = router({
             .select('id', { count: 'exact' })
             .eq('status', 'active'),
 
-          // Total users count
+          // Total user profiles count
           ctx.supabase
-            .from('users')
-            .select('id, last_login_at', { count: 'exact' })
+            .from('user_profiles')
+            .select('id', { count: 'exact' })
             .eq('is_active', true),
 
           // GMV (Gross Merchandise Value)

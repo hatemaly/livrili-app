@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, publicProcedure, protectedProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 
 // Supplier schema for the business context
 // In the Livrili model, there's initially one supplier, but this allows for future expansion
@@ -39,7 +39,7 @@ const defaultSupplier = {
 
 export const suppliersRouter = router({
   // List all suppliers (currently returns single supplier)
-  list: publicProcedure
+  list: adminProcedure
     .input(
       z.object({
         search: z.string().optional(),
@@ -72,7 +72,7 @@ export const suppliersRouter = router({
     }),
 
   // Get a single supplier by ID
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string())
     .query(async ({ input: id }) => {
       if (id === defaultSupplier.id) {
@@ -86,7 +86,7 @@ export const suppliersRouter = router({
     }),
 
   // Create a new supplier (protected - admin only)
-  create: protectedProcedure
+  create: adminProcedure
     .input(
       z.object({
         name: z.string(),
@@ -117,7 +117,7 @@ export const suppliersRouter = router({
     }),
 
   // Update a supplier (protected - admin only)
-  update: protectedProcedure
+  update: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -161,7 +161,7 @@ export const suppliersRouter = router({
     }),
 
   // Delete a supplier (protected - admin only)
-  delete: protectedProcedure
+  delete: adminProcedure
     .input(z.string())
     .mutation(async ({ input: id, ctx }) => {
       // Check if user is admin

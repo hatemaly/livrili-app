@@ -1,8 +1,9 @@
 'use client'
 
+import { Button , useLanguage, useRTL } from '@livrili/ui'
 import React, { useState, useEffect } from 'react'
-import { Button } from '@livrili/ui'
-import { useLanguage, useRTL } from '@livrili/ui'
+import { BrandButton, BrandSpinner, BrandCard } from '@/components/common/brand-system'
+import { LivriliIcon } from '@/components/common/livrili-logo'
 
 interface CartItem {
   id: string
@@ -49,7 +50,7 @@ export function CartButton({
   }, [itemCount, lastItemCount])
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat(language === 'ar' ? 'ar-DZ' : 'fr-DZ', {
+    return new Intl.NumberFormat(language === 'ar' ? 'ar-DZ' : 'en-DZ', {
       style: 'currency',
       currency: 'DZD',
       minimumFractionDigits: 0,
@@ -67,7 +68,7 @@ export function CartButton({
             <div className="p-4 max-h-64 overflow-y-auto">
               <h3 className="font-bold text-livrili-prussian mb-3 flex items-center space-x-2 rtl:space-x-reverse">
                 <span>🛒</span>
-                <span>{t('cart.preview.title', 'سلة التسوق')}</span>
+                <span>{t('cart.preview.title', 'Shopping Cart')}</span>
               </h3>
               
               {items.slice(0, 3).map((item, index) => (
@@ -93,7 +94,7 @@ export function CartButton({
               
               {items.length > 3 && (
                 <div className="text-center py-2 text-sm text-gray-500">
-                  +{items.length - 3} {t('cart.preview.more_items', 'منتجات أخرى')}
+                  +{items.length - 3} {t('cart.preview.more_items', 'other items')}
                 </div>
               )}
             </div>
@@ -138,8 +139,8 @@ export function CartButton({
                 </div>
                 <span className="text-lg">
                   {isEmpty 
-                    ? t('cart.empty', 'السلة فارغة') 
-                    : t('cart.view', 'عرض السلة')
+                    ? t('cart.empty', 'Cart is empty') 
+                    : t('cart.view', 'View Cart')
                   }
                 </span>
               </div>
@@ -152,7 +153,7 @@ export function CartButton({
                       {formatPrice(totalAmount)}
                     </div>
                     <div className="text-xs opacity-80">
-                      {itemCount} {t('cart.items', 'منتج')}
+                      {itemCount} {t('cart.items', 'items')}
                     </div>
                   </div>
                 )}
@@ -181,12 +182,12 @@ export function CartButton({
                   {isProcessing ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>{t('cart.processing', 'جاري المعالجة...')}</span>
+                      <span>{t('cart.processing', 'Processing...')}</span>
                     </>
                   ) : (
                     <>
                       <span className="text-xl">⚡</span>
-                      <span>{t('cart.quick_checkout', 'دفع سريع')}</span>
+                      <span>{t('cart.quick_checkout', 'Quick Checkout')}</span>
                       <span className="text-sm opacity-80">
                         {formatPrice(totalAmount)}
                       </span>

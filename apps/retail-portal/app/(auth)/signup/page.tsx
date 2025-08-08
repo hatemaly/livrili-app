@@ -1,21 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { Button } from '@livrili/ui'
-import { useAuthContext } from '@livrili/auth'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
+import { useAuth } from '@/lib/supabase-auth'
 
 export default function SignUpPage() {
   const router = useRouter()
-  const { signUp } = useAuthContext()
+  const { supabase } = useAuth()
   const [formData, setFormData] = useState({
     email: '',
     username: '',
     password: '',
     confirmPassword: '',
     businessName: '',
-    phone: '',
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -37,25 +37,96 @@ export default function SignUpPage() {
       return
     }
 
+    // Validate required fields
+    if (!formData.email || !formData.password || !formData.username || !formData.businessName) {
+      setError('Please fill in all required fields')
+      return
+    }
+
     setLoading(true)
 
     try {
-      const { error } = await signUp(
-        formData.email,
-        formData.password,
-        formData.username,
-        formData.businessName,
-        formData.phone
-      )
+      // 1. Create the auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            role: 'retailer',
+            username: formData.username,
+            full_name: formData.businessName,
+          }
+        }
+      })
       
-      if (error) {
-        setError(error.message)
-      } else {
-        // Redirect to a success page or login
-        router.push('/signup/success')
+      if (authError) {
+        setError(authError.message)
+        return
       }
-    } catch (err) {
-      setError('An unexpected error occurred')
+
+      if (!authData.user) {
+        setError('Failed to create account')
+        return
+      }
+
+      // 2. Update or create the user profile record (triggered automatically by auth.users trigger)
+      // We'll wait a moment for the trigger to complete then update with additional info
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      const { error: userError } = await supabase
+        .from('user_profiles')
+        .update({
+          username: formData.username,
+          full_name: formData.businessName,
+          role: 'retailer',
+          is_active: true,
+        })
+        .eq('id', authData.user.id)
+
+      if (userError) {
+        console.error('Error updating user profile:', userError)
+        // Note: Auth user is already created, so we'll let them proceed
+        // The trigger should have created a basic profile
+      }
+
+      // 3. Create the retailer record
+      const { data: retailerData, error: retailerError } = await supabase
+        .from('retailers')
+        .insert({
+          owner_id: authData.user.id, // Link to auth.users.id
+          business_name: formData.businessName,
+          email: formData.email,
+          status: 'pending', // Retailers start as pending approval
+        })
+        .select('id')
+        .single()
+
+      if (retailerError) {
+        console.error('Error creating retailer record:', retailerError)
+        setError('Account created but retailer profile setup failed. Please contact support.')
+        return
+      }
+
+      // 4. Update the user profile with the retailer_id
+      if (retailerData?.id) {
+        const { error: updateError } = await supabase
+          .from('user_profiles')
+          .update({ 
+            retailer_id: retailerData.id,
+          })
+          .eq('id', authData.user.id)
+
+        if (updateError) {
+          console.error('Error linking retailer to user profile:', updateError)
+        }
+      }
+
+      // Redirect to success page
+      router.push('/signup/success')
+      
+    } catch (err: any) {
+      console.error('Signup error:', err)
+      setError('An unexpected error occurred during registration')
     } finally {
       setLoading(false)
     }
@@ -117,23 +188,6 @@ export default function SignUpPage() {
                 value={formData.username}
                 onChange={handleChange}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <div className="mt-1">
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                placeholder="+213 XXX XXX XXX"
               />
             </div>
           </div>

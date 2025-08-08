@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, adminProcedure, protectedProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 // Driver input schemas
@@ -690,7 +690,7 @@ export const deliveriesRouter = router({
       return updatedDelivery
     }),
 
-  updateDeliveryStatus: protectedProcedure
+  updateDeliveryStatus: adminProcedure
     .input(z.object({
       delivery_id: z.string().uuid(),
       status: z.enum(['pending', 'assigned', 'picked_up', 'in_transit', 'delivered', 'failed', 'cancelled']),
@@ -814,7 +814,7 @@ export const deliveriesRouter = router({
       return updatedDelivery
     }),
 
-  getDriverDeliveries: protectedProcedure
+  getDriverDeliveries: adminProcedure
     .input(z.object({
       driver_id: z.string().uuid().optional(),
       status: z.enum(['pending', 'assigned', 'picked_up', 'in_transit', 'delivered', 'failed', 'cancelled']).optional(),
@@ -1310,7 +1310,7 @@ export const deliveriesRouter = router({
       }
     }),
 
-  trackDelivery: publicProcedure
+  trackDelivery: adminProcedure
     .input(z.object({
       delivery_number: z.string(),
     }))
@@ -1348,7 +1348,7 @@ export const deliveriesRouter = router({
       return delivery
     }),
 
-  confirmDelivery: protectedProcedure
+  confirmDelivery: adminProcedure
     .input(z.object({
       delivery_id: z.string().uuid(),
       photos: z.array(z.string()).optional(),

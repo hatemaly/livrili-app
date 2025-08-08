@@ -1,7 +1,6 @@
 'use client'
 
-import { AuthGuard } from '@livrili/auth'
-import { useAuthContext } from '@livrili/auth'
+import { AuthGuard, useSupabaseAuth } from '@livrili/auth'
 import { Button, ImageLogoHeader } from '@livrili/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../components/ui/dropdown-menu'
 import Link from 'next/link'
@@ -18,7 +17,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const { user, signOut } = useAuthContext()
+  const { user, signOut } = useSupabaseAuth()
   const { t } = useAdminLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 

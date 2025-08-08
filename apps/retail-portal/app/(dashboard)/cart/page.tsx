@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Image from 'next/image'
-import { api } from '../../../lib/trpc'
 import { useLanguage, useRTL } from '@livrili/ui'
-import { toast } from 'sonner'
 import { Trash2, ShoppingCart, Package, AlertTriangle, CheckCircle, MessageCircle } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
+
+import { api } from '../../../lib/trpc'
+
 
 interface CartItem {
   id: string
@@ -128,12 +130,12 @@ export default function CartPage() {
   const updateQuantityMutation = api.retailer.cart.updateQuantity.useMutation({
     onSuccess: () => {
       refetch()
-      toast.success(t('cart.quantity_updated', 'تم تحديث الكمية'), {
+      toast.success(t('cart.quantity_updated', 'Quantity updated'), {
         icon: <CheckCircle className="w-4 h-4" />
       })
     },
     onError: (error) => {
-      toast.error(error.message || t('cart.update_error', 'خطأ في تحديث الكمية'), {
+      toast.error(error.message || t('cart.update_error', 'Error updating quantity'), {
         icon: <AlertTriangle className="w-4 h-4" />
       })
     }
@@ -142,12 +144,12 @@ export default function CartPage() {
   const removeItemMutation = api.retailer.cart.removeItem.useMutation({
     onSuccess: () => {
       refetch()
-      toast.success(t('cart.item_removed', 'تم حذف المنتج'), {
+      toast.success(t('cart.item_removed', 'Item removed'), {
         icon: <CheckCircle className="w-4 h-4" />
       })
     },
     onError: (error) => {
-      toast.error(error.message || t('cart.remove_error', 'خطأ في حذف المنتج'), {
+      toast.error(error.message || t('cart.remove_error', 'Error removing item'), {
         icon: <AlertTriangle className="w-4 h-4" />
       })
     }
@@ -158,7 +160,7 @@ export default function CartPage() {
       router.push(`/orders/${order.id}?success=true`)
     },
     onError: (error) => {
-      alert(error.message || t('cart.checkout.error', 'حدث خطأ أثناء إتمام الطلب'))
+      alert(error.message || t('cart.checkout.error', 'An error occurred during checkout'))
     }
   })
 
@@ -216,7 +218,7 @@ export default function CartPage() {
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-livrili-prussian border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-livrili-prussian font-medium">
-            {t('cart.loading', 'جاري تحميل السلة...')}
+            {t('cart.loading', 'Loading cart...')}
           </p>
         </div>
       </div>
@@ -238,10 +240,10 @@ export default function CartPage() {
             <div className="flex-1">
               <h1 className="text-xl font-bold text-livrili-prussian flex items-center space-x-2 rtl:space-x-reverse">
                 <ShoppingCart className="w-6 h-6" />
-                <span>{t('cart.title', 'سلة التسوق')}</span>
+                <span>{t('cart.title', 'Shopping Cart')}</span>
               </h1>
               <p className="text-sm text-gray-600">
-                {cartItems?.length || 0} {t('cart.items', 'منتج')}
+                {cartItems?.length || 0} {t('cart.items', 'items')}
               </p>
             </div>
           </div>
@@ -261,12 +263,12 @@ export default function CartPage() {
                   </div>
                   <div className="flex-1">
                     <p className="font-bold text-yellow-800 text-lg">
-                      {t('cart.minimum_order_title', 'الحد الأدنى للطلب')}
+                      {t('cart.minimum_order_title', 'Minimum Order')}
                     </p>
                     <p className="text-sm text-yellow-700 mt-1">
-                      {t('cart.minimum_order_message', 'أضف منتجات بقيمة')} 
-                      <span className="font-bold text-yellow-800"> {(minimumOrderAmount - subtotal).toLocaleString()} {t('currency.dzd', 'د.ج')} </span>
-                      {t('cart.minimum_order_more', 'إضافية')}
+                      {t('cart.minimum_order_message', 'Add products worth')} 
+                      <span className="font-bold text-yellow-800"> {(minimumOrderAmount - subtotal).toLocaleString()} {t('currency.dzd', 'DZD')} </span>
+                      {t('cart.minimum_order_more', 'more')}
                     </p>
                   </div>
                 </div>
@@ -279,17 +281,17 @@ export default function CartPage() {
                   >
                     <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse">
                       <ShoppingCart className="w-5 h-5" />
-                      <span className="font-medium">{t('cart.browse_suggestions', 'تصفح المنتجات المقترحة')}</span>
+                      <span className="font-medium">{t('cart.browse_suggestions', 'Browse Suggested Products')}</span>
                     </div>
                   </button>
                   
                   <button
-                    onClick={() => window.open('https://wa.me/213XXXXXXXXX?text=' + encodeURIComponent(t('whatsapp.help_minimum', 'أحتاج مساعدة في إكمال الحد الأدنى للطلب')), '_blank')}
+                    onClick={() => window.open('https://wa.me/213XXXXXXXXX?text=' + encodeURIComponent(t('whatsapp.help_minimum', 'I need help completing the minimum order')), '_blank')}
                     className="w-full bg-green-100 hover:bg-green-200 text-green-800 rounded-xl py-3 px-4 transition-all duration-200 hover:scale-105 active:scale-95"
                   >
                     <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse">
                       <MessageCircle className="w-5 h-5" />
-                      <span className="font-medium">{t('cart.whatsapp_help', 'مساعدة عبر واتساب')}</span>
+                      <span className="font-medium">{t('cart.whatsapp_help', 'WhatsApp Help')}</span>
                     </div>
                   </button>
                 </div>
@@ -327,10 +329,10 @@ export default function CartPage() {
                         {item.name[language]}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        {item.price.toLocaleString()} {t('currency.dzd', 'د.ج')} / {item.unit || t('cart.unit', 'وحدة')}
+                        {item.price.toLocaleString()} {t('currency.dzd', 'DZD')} / {item.unit || t('cart.unit', 'unit')}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {t('cart.stock_available', 'متوفر')}: {item.stock} {item.unit || t('cart.unit', 'وحدة')}
+                        {t('cart.stock_available', 'Available')}: {item.stock} {item.unit || t('cart.unit', 'unit')}
                       </p>
                     </div>
 
@@ -349,7 +351,7 @@ export default function CartPage() {
                           {item.quantity}
                         </span>
                         <span className="text-xs text-gray-500">
-                          {item.unit || t('cart.unit', 'وحدة')}
+                          {item.unit || t('cart.unit', 'unit')}
                         </span>
                       </div>
                       
@@ -376,54 +378,54 @@ export default function CartPage() {
                   <div className={`mt-4 pt-3 border-t border-gray-100 ${isRTL ? 'text-left' : 'text-right'}`}>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-500">
-                        {item.quantity} × {item.price.toLocaleString()} {t('currency.dzd', 'د.ج')}
+                        {item.quantity} × {item.price.toLocaleString()} {t('currency.dzd', 'DZD')}
                       </span>
                       <span className="text-lg font-bold text-livrili-prussian">
-                        {(item.price * item.quantity).toLocaleString()} {t('currency.dzd', 'د.ج')}
+                        {(item.price * item.quantity).toLocaleString()} {t('currency.dzd', 'DZD')}
                       </span>
                     </div>
                   </div>
                   </div>
                 </SwipeToDelete>
-              ))}}
+              ))}
             </div>
 
             {/* Order Summary */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-livrili-prussian mb-4 flex items-center space-x-2 rtl:space-x-reverse">
                 <CheckCircle className="w-5 h-5" />
-                <span>{t('cart.order_summary', 'ملخص الطلب')}</span>
+                <span>{t('cart.order_summary', 'Order Summary')}</span>
               </h3>
               
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('cart.subtotal', 'المجموع الفرعي')}</span>
-                  <span className="font-medium">{subtotal.toLocaleString()} {t('currency.dzd', 'د.ج')}</span>
+                  <span className="text-gray-600">{t('cart.subtotal', 'Subtotal')}</span>
+                  <span className="font-medium">{subtotal.toLocaleString()} {t('currency.dzd', 'DZD')}</span>
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('cart.tax', 'الضريبة')} (19%)</span>
-                  <span className="font-medium">{tax.toLocaleString()} {t('currency.dzd', 'د.ج')}</span>
+                  <span className="text-gray-600">{t('cart.tax', 'Tax')} (19%)</span>
+                  <span className="font-medium">{tax.toLocaleString()} {t('currency.dzd', 'DZD')}</span>
                 </div>
                 
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 flex items-center space-x-1 rtl:space-x-reverse">
-                    <span>{t('cart.delivery', 'التوصيل')}</span>
+                    <span>{t('cart.delivery', 'Delivery')}</span>
                     {deliveryFee === 0 && (
                       <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                        {t('cart.free', 'مجاني')}
+                        {t('cart.free', 'Free')}
                       </span>
                     )}
                   </span>
                   <span className="font-medium">
-                    {deliveryFee > 0 ? `${deliveryFee.toLocaleString()} ${t('currency.dzd', 'د.ج')}` : t('cart.free', 'مجاني')}
+                    {deliveryFee > 0 ? `${deliveryFee.toLocaleString()} ${t('currency.dzd', 'DZD')}` : t('cart.free', 'Free')}
                   </span>
                 </div>
                 
                 <div className="border-t pt-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-livrili-prussian">{t('cart.total', 'المجموع الكلي')}</span>
-                    <span className="text-2xl font-bold text-livrili-prussian">{total.toLocaleString()} {t('currency.dzd', 'د.ج')}</span>
+                    <span className="text-lg font-semibold text-livrili-prussian">{t('cart.total', 'Total')}</span>
+                    <span className="text-2xl font-bold text-livrili-prussian">{total.toLocaleString()} {t('currency.dzd', 'DZD')}</span>
                   </div>
                 </div>
               </div>
@@ -432,15 +434,15 @@ export default function CartPage() {
               {retailerInfo && (
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">{t('cart.current_balance', 'الرصيد الحالي')}</span>
+                    <span className="text-gray-600">{t('cart.current_balance', 'Current Balance')}</span>
                     <span className={`font-medium ${retailerInfo.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {retailerInfo.balance.toLocaleString()} {t('currency.dzd', 'د.ج')}
+                      {retailerInfo.balance.toLocaleString()} {t('currency.dzd', 'DZD')}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm mt-1">
-                    <span className="text-gray-600">{t('cart.after_order', 'الرصيد بعد الطلب')}</span>
+                    <span className="text-gray-600">{t('cart.after_order', 'Balance After Order')}</span>
                     <span className={`font-medium ${(retailerInfo.balance - total) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {(retailerInfo.balance - total).toLocaleString()} {t('currency.dzd', 'د.ج')}
+                      {(retailerInfo.balance - total).toLocaleString()} {t('currency.dzd', 'DZD')}
                     </span>
                   </div>
                 </div>
@@ -454,10 +456,10 @@ export default function CartPage() {
               <ShoppingCart className="w-12 h-12 text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {t('cart.empty_title', 'السلة فارغة')}
+              {t('cart.empty_title', 'Cart is Empty')}
             </h3>
             <p className="text-gray-600 mb-8">
-              {t('cart.empty_message', 'أضف منتجات لتبدأ التسوق')}
+              {t('cart.empty_message', 'Add products to start shopping')}
             </p>
             <button
               onClick={() => router.push('/categories')}
@@ -465,7 +467,7 @@ export default function CartPage() {
             >
               <div className="flex items-center space-x-3 rtl:space-x-reverse">
                 <ShoppingCart className="w-6 h-6" />
-                <span className="font-medium">{t('cart.start_shopping', 'ابدأ التسوق')}</span>
+                <span className="font-medium">{t('cart.start_shopping', 'Start Shopping')}</span>
               </div>
             </button>
           </div>
@@ -479,7 +481,7 @@ export default function CartPage() {
           {!isMinimumMet && (
             <div className="mb-3">
               <div className="flex justify-between text-xs text-gray-600 mb-1">
-                <span>{t('cart.progress', 'التقدم')}</span>
+                <span>{t('cart.progress', 'Progress')}</span>
                 <span>{Math.round((subtotal / minimumOrderAmount) * 100)}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -506,13 +508,13 @@ export default function CartPage() {
               {isCheckingOut || checkoutMutation.isLoading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>{t('cart.processing', 'جاري معالجة الطلب...')}</span>
+                  <span>{t('cart.processing', 'Processing order...')}</span>
                 </>
               ) : (
                 <>
                   <CheckCircle className="w-6 h-6" />
                   <span>
-                    {t('cart.checkout', 'إتمام الطلب')} • {total.toLocaleString()} {t('currency.dzd', 'د.ج')}
+                    {t('cart.checkout', 'Checkout')} • {total.toLocaleString()} {t('currency.dzd', 'DZD')}
                   </span>
                 </>
               )}
@@ -522,20 +524,20 @@ export default function CartPage() {
           {!isMinimumMet && (
             <div className="text-center mt-3">
               <p className="text-xs text-red-600 mb-2">
-                {t('cart.minimum_required', 'الحد الأدنى للطلب')} {minimumOrderAmount.toLocaleString()} {t('currency.dzd', 'د.ج')}
+                {t('cart.minimum_required', 'Minimum order')} {minimumOrderAmount.toLocaleString()} {t('currency.dzd', 'DZD')}
               </p>
               <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse">
                 <button
                   onClick={() => router.push('/categories?suggested=true')}
                   className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors"
                 >
-                  {t('cart.add_more', 'أضف المزيد')}
+                  {t('cart.add_more', 'Add More')}
                 </button>
                 <button
-                  onClick={() => window.open('https://wa.me/213XXXXXXXXX?text=' + encodeURIComponent(t('whatsapp.help_minimum', 'أحتاج مساعدة في إكمال الحد الأدنى للطلب')), '_blank')}
+                  onClick={() => window.open('https://wa.me/213XXXXXXXXX?text=' + encodeURIComponent(t('whatsapp.help_minimum', 'I need help completing the minimum order')), '_blank')}
                   className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition-colors"
                 >
-                  {t('cart.help', 'مساعدة')}
+                  {t('cart.help', 'Help')}
                 </button>
               </div>
             </div>

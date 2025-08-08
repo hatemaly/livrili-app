@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, adminProcedure, protectedProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 const productSchema = z.object({
@@ -31,7 +31,7 @@ const productSchema = z.object({
 
 export const productsRouter = router({
   // List products with filters and pagination
-  list: publicProcedure
+  list: adminProcedure
     .input(z.object({
       categoryId: z.string().uuid().optional(),
       search: z.string().optional(),
@@ -108,7 +108,7 @@ export const productsRouter = router({
     }),
 
   // Get product by ID
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string().uuid())
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
@@ -134,7 +134,7 @@ export const productsRouter = router({
     }),
 
   // Get product by SKU
-  getBySku: publicProcedure
+  getBySku: adminProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
@@ -341,7 +341,7 @@ export const productsRouter = router({
     }),
 
   // Get product tags
-  getTags: publicProcedure
+  getTags: adminProcedure
     .input(z.string().uuid())
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
@@ -445,7 +445,7 @@ export const productsRouter = router({
     }),
 
   // Get products by tag
-  getByTag: publicProcedure
+  getByTag: adminProcedure
     .input(z.object({
       tagId: z.string(),
       limit: z.number().min(1).max(50).default(20),

@@ -1,0 +1,367 @@
+{
+  "config": {
+    "configFile": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/playwright.config.ts",
+    "rootDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 5
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 8,
+    "webServer": {
+      "command": "npm run dev",
+      "port": 3001,
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "01-authentication.spec.ts",
+      "file": "01-authentication.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication Tests",
+          "file": "01-authentication.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should display login form correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14027,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T01:49:44.099Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4b4d36e9b0558f4ed4af-3cb9979ee24d440da473",
+              "file": "01-authentication.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "should show validation errors for empty fields",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5149,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T01:49:44.098Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4b4d36e9b0558f4ed4af-500a150e616ca53d72ad",
+              "file": "01-authentication.spec.ts",
+              "line": 41,
+              "column": 7
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 11288,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T01:49:44.108Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4b4d36e9b0558f4ed4af-7ac8250338c44b60664a",
+              "file": "01-authentication.spec.ts",
+              "line": 67,
+              "column": 7
+            },
+            {
+              "title": "should login with valid credentials and redirect",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 18727,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"/\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"/\" until \"load\"\n============================================================\n    at /home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts:113:12",
+                        "location": {
+                          "file": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts",
+                          "column": 12,
+                          "line": 113
+                        },
+                        "snippet": "  111 |     // Wait for redirect with multiple possible destinations\n  112 |     await Promise.race([\n> 113 |       page.waitForURL('/', { timeout: 10000 }),\n      |            ^\n  114 |       page.waitForURL('/dashboard', { timeout: 10000 }),\n  115 |       page.waitForSelector('nav', { timeout: 10000 }),\n  116 |       page.waitForSelector('main', { timeout: 10000 })"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts",
+                            "column": 12,
+                            "line": 113
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"/\" until \"load\"\n============================================================\n\n  111 |     // Wait for redirect with multiple possible destinations\n  112 |     await Promise.race([\n> 113 |       page.waitForURL('/', { timeout: 10000 }),\n      |            ^\n  114 |       page.waitForURL('/dashboard', { timeout: 10000 }),\n  115 |       page.waitForSelector('nav', { timeout: 10000 }),\n  116 |       page.waitForSelector('main', { timeout: 10000 })\n    at /home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts:113:12"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T01:49:44.116Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results/01-authentication-Authenti-1c517-id-credentials-and-redirect-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results/01-authentication-Authenti-1c517-id-credentials-and-redirect-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results/01-authentication-Authenti-1c517-id-credentials-and-redirect-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts",
+                        "column": 12,
+                        "line": 113
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4b4d36e9b0558f4ed4af-b00b92e6e960d842568d",
+              "file": "01-authentication.spec.ts",
+              "line": 94,
+              "column": 7
+            },
+            {
+              "title": "should logout successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 18796,
+                      "error": {
+                        "message": "Error: None of the selectors found: nav, .flex.items-center.gap-2, main",
+                        "stack": "Error: None of the selectors found: nav, .flex.items-center.gap-2, main\n    at TestHelpers.waitForElementWithFallback (/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/test-helpers.ts:64:11)\n    at /home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts:143:5",
+                        "location": {
+                          "file": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/test-helpers.ts",
+                          "column": 11,
+                          "line": 64
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mtest-helpers.ts:64\n\n  62 |     }\n  63 |     \n> 64 |     throw new Error(`None of the selectors found: ${selectors.join(', ')}`);\n     |           ^\n  65 |   }\n  66 |\n  67 |   /**"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/test-helpers.ts",
+                            "column": 11,
+                            "line": 64
+                          },
+                          "message": "Error: None of the selectors found: nav, .flex.items-center.gap-2, main\n\n   at test-helpers.ts:64\n\n  62 |     }\n  63 |     \n> 64 |     throw new Error(`None of the selectors found: ${selectors.join(', ')}`);\n     |           ^\n  65 |   }\n  66 |\n  67 |   /**\n    at TestHelpers.waitForElementWithFallback (/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/test-helpers.ts:64:11)\n    at /home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/01-authentication.spec.ts:143:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T01:49:44.121Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results/01-authentication-Authenti-01963--should-logout-successfully-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results/01-authentication-Authenti-01963--should-logout-successfully-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/test-results/01-authentication-Authenti-01963--should-logout-successfully-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/hatem/projects/livrili/livrili-app/apps/admin-portal/tests/test-helpers.ts",
+                        "column": 11,
+                        "line": 64
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4b4d36e9b0558f4ed4af-431eb95cc5330bfb0775",
+              "file": "01-authentication.spec.ts",
+              "line": 128,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-08T01:49:43.386Z",
+    "duration": 19741.299,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

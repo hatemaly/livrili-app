@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, adminProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 const categorySchema = z.object({
@@ -18,7 +18,7 @@ const categorySchema = z.object({
 
 export const categoriesRouter = router({
   // Get all categories (public)
-  list: publicProcedure
+  list: adminProcedure
     .input(z.object({
       includeInactive: z.boolean().optional(),
       parentId: z.string().uuid().nullable().optional(),
@@ -51,7 +51,7 @@ export const categoriesRouter = router({
     }),
 
   // Get category by ID (public)
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string().uuid())
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
@@ -77,7 +77,7 @@ export const categoriesRouter = router({
     }),
 
   // Get category by slug (public)
-  getBySlug: publicProcedure
+  getBySlug: adminProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
@@ -103,7 +103,7 @@ export const categoriesRouter = router({
     }),
 
   // Get category tree (public)
-  tree: publicProcedure
+  tree: adminProcedure
     .query(async ({ ctx }) => {
       const { data, error } = await ctx.supabase
         .from('categories')

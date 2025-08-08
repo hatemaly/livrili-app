@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
 import { useLanguage, useRTL } from '@livrili/ui'
+import React, { useState } from 'react'
+import { BrandHeading, BrandSpinner, BrandAlert, BrandButton } from '@/components/common/brand-system'
 
 interface Category {
   id: string
@@ -104,11 +105,11 @@ export function VisualCategoryGrid({
   if (isLoading) {
     return (
       <div className="w-full">
-        <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse mb-6">
-          <div className="w-6 h-6 border-2 border-livrili-prussian border-t-transparent rounded-full animate-spin" />
-          <span className="text-lg text-livrili-prussian font-medium">
-            {t('categories.loading', 'جاري تحميل الفئات...')}
-          </span>
+        <div className="flex items-center justify-center space-x-3 rtl:space-x-reverse mb-6">
+          <BrandSpinner size="md" />
+          <BrandHeading level={4}>
+            {t('categories.loading', 'Loading categories...')}
+          </BrandHeading>
         </div>
         
         {/* Loading skeleton */}
@@ -124,12 +125,12 @@ export function VisualCategoryGrid({
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-livrili-prussian mb-2">
-          {t('categories.title', 'اختر فئة المنتجات')}
-        </h2>
-        <p className="text-gray-600">
-          {t('categories.subtitle', 'اضغط على الفئة لرؤية المنتجات')}
+      <div className="mb-8 text-center">
+        <BrandHeading level={2} className="mb-3">
+          {t('categories.title', 'Choose Product Category')}
+        </BrandHeading>
+        <p className="text-gray-600 text-lg">
+          {t('categories.subtitle', 'Click on a category to see products')}
         </p>
       </div>
 
@@ -144,33 +145,37 @@ export function VisualCategoryGrid({
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
               className={`
-                relative h-24 p-4 rounded-xl border-2 transition-all duration-200
+                relative h-28 p-5 rounded-2xl border-2 transition-all duration-300
                 focus:outline-none focus:ring-4 focus:ring-livrili-prussian/20
                 ${category.color}
                 ${isSelected 
-                  ? 'border-livrili-prussian bg-livrili-prussian/10 shadow-lg scale-105' 
-                  : 'border-gray-200'
+                  ? 'border-livrili-prussian bg-gradient-to-br from-livrili-prussian/10 to-livrili-prussian/5 shadow-2xl scale-105 ring-4 ring-livrili-prussian/20' 
+                  : 'border-gray-200 hover:border-livrili-prussian/40'
                 }
                 ${isTouched ? 'scale-95' : 'hover:scale-105 active:scale-95'}
-                ${!isSelected && !isTouched ? 'hover:shadow-md' : ''}
+                ${!isSelected && !isTouched ? 'hover:shadow-lg' : ''}
               `}
             >
               {/* Selection indicator */}
               {isSelected && (
-                <div className="absolute -top-2 -right-2 rtl:-right-auto rtl:-left-2 w-6 h-6 bg-livrili-prussian rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">✓</span>
+                <div className="absolute -top-3 -right-3 rtl:-right-auto rtl:-left-3 w-8 h-8 bg-gradient-to-br from-livrili-prussian to-livrili-air rounded-full flex items-center justify-center shadow-lg animate-bounce-in">
+                  <span className="text-white text-lg font-bold">✓</span>
                 </div>
               )}
               
               {/* Category content */}
-              <div className="flex flex-col items-center justify-center h-full space-y-1">
-                <span className="text-3xl">{category.emoji}</span>
-                <span className={`text-sm font-medium text-center leading-tight ${isRTL ? 'font-arabic' : ''}`}>
+              <div className="flex flex-col items-center justify-center h-full space-y-2">
+                <span className="text-4xl transform transition-transform duration-300 hover:scale-110">{category.emoji}</span>
+                <span className={`text-sm font-semibold text-center leading-tight ${isRTL ? 'font-arabic' : ''} ${isSelected ? 'text-livrili-prussian' : 'text-gray-700'}`}>
                   {category.name[language]}
                 </span>
                 {category.count && (
-                  <span className="text-xs text-gray-500 bg-white/70 px-2 py-0.5 rounded-full">
-                    {category.count} {t('categories.items', 'منتج')}
+                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                    isSelected 
+                      ? 'bg-livrili-prussian text-white' 
+                      : 'text-gray-500 bg-white/80'
+                  }`}>
+                    {category.count} {t('categories.items', 'items')}
                   </span>
                 )}
               </div>
@@ -180,44 +185,43 @@ export function VisualCategoryGrid({
       </div>
 
       {/* Quick actions */}
-      <div className="bg-gray-50 rounded-xl p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center space-x-2 rtl:space-x-reverse">
-          <span>⚡</span>
-          <span>{t('categories.quick_actions', 'إجراءات سريعة')}</span>
-        </h3>
+      <div className="bg-gradient-to-r from-livrili-papaya/30 to-livrili-papaya/50 rounded-2xl p-6 border border-livrili-papaya">
+        <BrandHeading level={4} className="mb-4 flex items-center space-x-3 rtl:space-x-reverse">
+          <span className="text-xl">⚡</span>
+          <span>{t('categories.quick_actions', 'Quick Actions')}</span>
+        </BrandHeading>
         
-        <div className="grid grid-cols-2 gap-3">
-          <button
+        <div className="grid grid-cols-2 gap-4">
+          <BrandButton
+            variant="outline"
+            size="md"
+            icon="🔍"
+            className="bg-white/90 hover:bg-white"
             onClick={() => onCategorySelect('search')}
-            className="flex items-center justify-center space-x-2 rtl:space-x-reverse p-3 bg-white rounded-lg border border-gray-200 hover:border-livrili-prussian hover:bg-livrili-prussian/5 transition-all duration-200 hover:scale-105 active:scale-95"
           >
-            <span className="text-lg">🔍</span>
-            <span className="text-sm font-medium">{t('categories.search', 'بحث')}</span>
-          </button>
+            {t('categories.search', 'Search')}
+          </BrandButton>
           
-          <button
+          <BrandButton
+            variant="ghost"
+            size="md"
+            icon="❤️"
+            className="bg-white/90 hover:bg-white text-livrili-fire hover:text-livrili-fire"
             onClick={() => onCategorySelect('favorites')}
-            className="flex items-center justify-center space-x-2 rtl:space-x-reverse p-3 bg-white rounded-lg border border-gray-200 hover:border-livrili-fire hover:bg-livrili-fire/5 transition-all duration-200 hover:scale-105 active:scale-95"
           >
-            <span className="text-lg">❤️</span>
-            <span className="text-sm font-medium">{t('categories.favorites', 'المفضلة')}</span>
-          </button>
+            {t('categories.favorites', 'Favorites')}
+          </BrandButton>
         </div>
       </div>
 
       {/* Help tip */}
-      <div className="mt-4 p-3 bg-livrili-papaya/50 rounded-lg border border-livrili-papaya">
-        <div className="flex items-start space-x-2 rtl:space-x-reverse">
-          <span className="text-lg">💡</span>
-          <div className="flex-1">
-            <p className="text-sm text-livrili-prussian">
-              <span className="font-medium">{t('categories.tip.title', 'نصيحة:')}</span>
-              {' '}
-              {t('categories.tip.message', 'اضغط مرة واحدة على الفئة لرؤية المنتجات. الفئة المختارة ستظهر بعلامة ✓')}
-            </p>
-          </div>
-        </div>
-      </div>
+      <BrandAlert 
+        type="info" 
+        title={t('categories.tip.title', 'Helpful Tip')}
+        className="mt-6"
+      >
+        {t('categories.tip.message', 'Click once on a category to see products. Selected category will show with ✓ mark')}
+      </BrandAlert>
     </div>
   )
 }

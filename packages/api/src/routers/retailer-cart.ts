@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { router, protectedProcedure } from '../trpc'
+import { router, retailerProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 export const retailerCartRouter = router({
   // Add item to cart or update quantity if exists
-  addToCart: protectedProcedure
+  addToCart: retailerProcedure
     .input(
       z.object({
         productId: z.string().uuid('Invalid product ID'),
@@ -98,7 +98,7 @@ export const retailerCartRouter = router({
     }),
 
   // Remove item from cart
-  removeFromCart: protectedProcedure
+  removeFromCart: retailerProcedure
     .input(
       z.object({
         productId: z.string().uuid('Invalid product ID'),
@@ -145,7 +145,7 @@ export const retailerCartRouter = router({
     }),
 
   // Update quantity of item in cart
-  updateQuantity: protectedProcedure
+  updateQuantity: retailerProcedure
     .input(
       z.object({
         productId: z.string().uuid('Invalid product ID'),
@@ -218,7 +218,7 @@ export const retailerCartRouter = router({
     }),
 
   // Get cart items with product details
-  getCart: protectedProcedure.query(async ({ ctx }) => {
+  getCart: retailerProcedure.query(async ({ ctx }) => {
     if (!ctx.user?.retailer_id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
@@ -314,7 +314,7 @@ export const retailerCartRouter = router({
   }),
 
   // Clear entire cart
-  clearCart: protectedProcedure.mutation(async ({ ctx }) => {
+  clearCart: retailerProcedure.mutation(async ({ ctx }) => {
     if (!ctx.user?.retailer_id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
@@ -354,7 +354,7 @@ export const retailerCartRouter = router({
   }),
 
   // Get cart summary using the SQL function
-  getCartSummary: protectedProcedure.query(async ({ ctx }) => {
+  getCartSummary: retailerProcedure.query(async ({ ctx }) => {
     if (!ctx.user?.retailer_id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
@@ -403,7 +403,7 @@ export const retailerCartRouter = router({
   }),
 
   // Add offline sync support for cart operations
-  syncOfflineActions: protectedProcedure
+  syncOfflineActions: retailerProcedure
     .input(
       z.object({
         actions: z.array(

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, adminProcedure, protectedProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 const retailerSchema = z.object({
@@ -103,10 +103,10 @@ export const retailersRouter = router({
         })
       }
 
-      // Get associated users
+      // Get associated user profiles
       const { data: users } = await ctx.supabase
-        .from('users')
-        .select('id, username, full_name, email, role, is_active, last_login_at')
+        .from('user_profiles')
+        .select('id, username, full_name, role, is_active')
         .eq('retailer_id', input)
 
       // Get recent orders
@@ -274,7 +274,7 @@ export const retailersRouter = router({
       // If approved, activate all associated users
       if (input.status === 'active') {
         await ctx.supabase
-          .from('users')
+          .from('user_profiles')
           .update({ is_active: true })
           .eq('retailer_id', input.id)
       }
@@ -313,10 +313,10 @@ export const retailersRouter = router({
     }),
 
   // Get retailer for current user
-  getCurrentUserRetailer: protectedProcedure
+  getCurrentUserRetailer: adminProcedure
     .query(async ({ ctx }) => {
       const { data: user } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('retailer_id')
         .eq('id', ctx.session.user.id)
         .single()
@@ -342,7 +342,7 @@ export const retailersRouter = router({
     }),
 
   // Get all retailers (simplified for selectors)
-  getAll: protectedProcedure
+  getAll: adminProcedure
     .input(z.object({
       limit: z.number().min(1).max(1000).default(100),
       offset: z.number().min(0).default(0),

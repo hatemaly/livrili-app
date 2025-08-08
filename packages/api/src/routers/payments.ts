@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, protectedProcedure, adminProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { getServiceSupabase } from '@livrili/database'
 import type { 
@@ -81,7 +81,7 @@ const isOverdue = (dueDate: string, gracePeriodDays: number = 30): boolean => {
 
 export const paymentsRouter = router({
   // Test endpoint for debugging
-  test: publicProcedure
+  test: adminProcedure
     .query(async () => {
       return {
         message: 'Payments router is working!',
@@ -89,7 +89,7 @@ export const paymentsRouter = router({
       }
     }),
   // Get all payments with filtering
-  getAll: protectedProcedure
+  getAll: adminProcedure
     .input(PaymentFiltersSchema)
     .query(async ({ input, ctx }) => {
       const supabase = getServiceSupabase()
@@ -159,7 +159,7 @@ export const paymentsRouter = router({
     }),
 
   // Get payment by ID with details
-  getById: protectedProcedure
+  getById: adminProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ input }) => {
       const supabase = getServiceSupabase()
@@ -193,7 +193,7 @@ export const paymentsRouter = router({
     }),
 
   // Record a new payment
-  recordPayment: protectedProcedure
+  recordPayment: adminProcedure
     .input(RecordPaymentSchema)
     .mutation(async ({ input, ctx }) => {
       const supabase = getServiceSupabase()
@@ -297,7 +297,7 @@ export const paymentsRouter = router({
     }),
 
   // Daily cash reconciliation
-  reconcileCash: protectedProcedure
+  reconcileCash: adminProcedure
     .input(CashReconciliationSchema)
     .mutation(async ({ input, ctx }) => {
       const supabase = getServiceSupabase()
@@ -357,7 +357,7 @@ export const paymentsRouter = router({
     }),
 
   // Get cash collection report for a user/date range
-  getCashCollectionReport: protectedProcedure
+  getCashCollectionReport: adminProcedure
     .input(z.object({
       user_id: z.string().uuid().optional(),
       date_from: z.string(),
@@ -415,7 +415,7 @@ export const paymentsRouter = router({
     }),
 
   // Update retailer balance (credit/debit adjustments)
-  updateRetailerBalance: protectedProcedure
+  updateRetailerBalance: adminProcedure
     .input(UpdateRetailerBalanceSchema)
     .mutation(async ({ input, ctx }) => {
       const supabase = getServiceSupabase()
@@ -518,7 +518,7 @@ export const paymentsRouter = router({
     }),
 
   // Get retailer financial details
-  getRetailerFinancials: protectedProcedure
+  getRetailerFinancials: adminProcedure
     .input(z.object({ 
       retailer_id: z.string().uuid(),
       include_payment_history: z.boolean().default(true),
@@ -580,7 +580,7 @@ export const paymentsRouter = router({
     }),
 
   // Get overdue payments
-  getOverduePayments: protectedProcedure
+  getOverduePayments: adminProcedure
     .input(z.object({
       grace_period_days: z.number().default(30),
       limit: z.number().default(50)
@@ -658,7 +658,7 @@ export const paymentsRouter = router({
     }),
 
   // Generate invoice (basic implementation)
-  generateInvoice: protectedProcedure
+  generateInvoice: adminProcedure
     .input(InvoiceGenerationSchema)
     .mutation(async ({ input, ctx }) => {
       const supabase = getServiceSupabase()
@@ -753,7 +753,7 @@ export const paymentsRouter = router({
     }),
 
   // Get financial summary/dashboard data
-  getFinancialSummary: protectedProcedure
+  getFinancialSummary: adminProcedure
     .input(z.object({
       date_from: z.string().optional(),
       date_to: z.string().optional()

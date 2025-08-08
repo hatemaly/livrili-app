@@ -1,10 +1,11 @@
 'use client'
 
-import { useAuthContext } from '@livrili/auth'
 import Link from 'next/link'
 
+import { useAuth } from '@/lib/supabase-auth'
+
 export default function RetailDashboardPage() {
-  const { user } = useAuthContext()
+  const { user } = useAuth()
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, adminProcedure, protectedProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 // Order item schema for creating/updating orders
@@ -914,7 +914,7 @@ export const ordersRouter = router({
     }),
 
   // Get retailer's orders (for retail portal)
-  getRetailerOrders: protectedProcedure
+  getRetailerOrders: adminProcedure
     .input(z.object({
       status: z.enum(['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']).optional(),
       date_from: z.string().optional(),
@@ -925,9 +925,9 @@ export const ordersRouter = router({
       sortOrder: z.enum(['asc', 'desc']).default('desc'),
     }).optional())
     .query(async ({ ctx, input }) => {
-      // Get user's retailer ID
+      // Get user's retailer ID from profile
       const { data: user } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('retailer_id')
         .eq('id', ctx.session.user.id)
         .single()

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { usePageTitle } from '../../../hooks/use-page-title'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button, ImageLogoBrand } from '@livrili/ui'
-import { useAuthContext } from '@livrili/auth'
+import { useSupabaseAuth } from '@livrili/auth'
+import { supabase } from '@livrili/database'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LoadingSpinner } from '../../../components/ui/loading-states'
 
@@ -12,7 +13,7 @@ export default function AdminLoginPage() {
   usePageTitle('Login - Livrili Admin Portal')
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { signIn, signInWithGoogle } = useAuthContext()
+  const { signIn, signInWithGoogle, signInWithUsername } = useSupabaseAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -41,11 +42,26 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      const { error } = await signIn(username, password)
+      // Use signInWithUsername for username-based login
+      const { error } = username.includes('@') 
+        ? await signIn(username, password)
+        : await signInWithUsername(username, password)
+        
       if (error) {
         setError(error.message)
       } else {
-        router.push('/')
+        // Wait a moment for session to be established
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
+        // Verify session was created
+        const { data: { session } } = await supabase.auth.getSession()
+        console.log('[LOGIN] Session after signin:', !!session)
+        
+        if (session) {
+          router.push('/')
+        } else {
+          setError('Failed to establish session. Please try again.')
+        }
       }
     } catch (err) {
       setError('An unexpected error occurred')

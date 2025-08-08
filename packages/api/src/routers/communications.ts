@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, protectedProcedure, adminProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 // Input schemas
@@ -370,7 +370,7 @@ export const communicationsRouter = router({
     }),
 
   // Get messages with pagination and filtering
-  getMessages: protectedProcedure
+  getMessages: adminProcedure
     .input(z.object({
       limit: z.number().min(1).max(100).default(20),
       offset: z.number().min(0).default(0),
@@ -517,7 +517,7 @@ export const communicationsRouter = router({
     }),
 
   // Get message templates
-  getTemplates: protectedProcedure
+  getTemplates: adminProcedure
     .input(z.object({
       category: z.enum(['welcome', 'order_update', 'payment_reminder', 'promotion', 'system', 'custom']).optional(),
       isActive: z.boolean().optional(),
@@ -612,7 +612,7 @@ export const communicationsRouter = router({
     }),
 
   // Get notifications for user
-  getNotifications: protectedProcedure
+  getNotifications: adminProcedure
     .input(z.object({
       limit: z.number().min(1).max(100).default(20),
       offset: z.number().min(0).default(0),
@@ -676,7 +676,7 @@ export const communicationsRouter = router({
     }),
 
   // Get retailer-specific messages
-  getRetailerMessages: protectedProcedure
+  getRetailerMessages: adminProcedure
     .input(z.object({
       retailerId: z.string().uuid(),
       limit: z.number().min(1).max(100).default(20),
@@ -755,7 +755,7 @@ export const communicationsRouter = router({
     }),
 
   // Mark message as read
-  markAsRead: protectedProcedure
+  markAsRead: adminProcedure
     .input(z.object({
       messageId: z.string().uuid().optional(),
       notificationId: z.string().uuid().optional(),
@@ -827,7 +827,7 @@ export const communicationsRouter = router({
     }),
 
   // Get conversations
-  getConversations: protectedProcedure
+  getConversations: adminProcedure
     .input(z.object({
       limit: z.number().min(1).max(100).default(20),
       offset: z.number().min(0).default(0),

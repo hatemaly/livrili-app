@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { useAuthContext } from '@livrili/auth'
 import { UserProfile, UserAvatar } from '@livrili/ui'
+import { useState } from 'react'
+
+import { useAuth } from '@/lib/supabase-auth'
 
 export default function ProfilePage() {
-  const { user, updateProfile } = useAuthContext()
+  const { user } = useAuth()
+  // TODO: Add update profile mutation when needed
+  // const updateProfileMutation = api.retailerAuth.updateProfile.useMutation()
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
@@ -14,15 +17,14 @@ export default function ProfilePage() {
     setMessage(null)
 
     try {
-      const { error } = await updateProfile({
-        fullName: data.fullName,
-        phone: data.phone,
-        preferredLanguage: data.preferredLanguage,
-      })
-
-      if (error) throw error
-
-      setMessage({ type: 'success', text: 'Profile updated successfully!' })
+      // TODO: Implement profile update when API endpoint is ready
+      // For now, just show a message
+      console.log('Profile update data:', data)
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setMessage({ type: 'success', text: 'Profile update feature coming soon!' })
     } catch (error) {
       console.error('Error updating profile:', error)
       setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' })
@@ -83,8 +85,8 @@ export default function ProfilePage() {
             ...user,
             email: user.email || null,
             retailerId: user.retailerId || null,
-            lastLoginAt: user.lastLoginAt?.toISOString() || null,
-            createdAt: user.createdAt.toISOString(),
+            lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt).toISOString() : null,
+            createdAt: user.createdAt ? new Date(user.createdAt).toISOString() : new Date().toISOString(),
           }} 
           onUpdate={handleUpdateProfile}
           editable={!isLoading}

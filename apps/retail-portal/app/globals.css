@@ -4,56 +4,70 @@
 
 @layer base {
   :root {
-    /* Livrili Brand Colors */
-    --livrili-prussian: 201 100% 14%;
-    --livrili-fire: 355 83% 41%;
-    --livrili-air: 207 35% 58%;
-    --livrili-barn: 0 100% 24%;
-    --livrili-papaya: 34 75% 91%;
+    /* Livrili Brand Colors - Enhanced Palette */
+    --livrili-prussian: 201 100% 14%;      /* #003049 - Primary Brand */
+    --livrili-fire: 355 83% 41%;           /* #C1121F - Secondary Brand */
+    --livrili-air: 207 35% 58%;            /* #669BBC - Accent Blue */
+    --livrili-barn: 0 100% 24%;            /* #780000 - Dark Red */
+    --livrili-papaya: 34 75% 91%;          /* #FDF0D5 - Light Cream */
+    
+    /* Additional Brand Variants */
+    --livrili-prussian-light: 201 100% 25%; /* Lighter prussian blue */
+    --livrili-prussian-dark: 201 100% 8%;   /* Darker prussian blue */
+    --livrili-success: 142 76% 36%;         /* Success green */
+    --livrili-warning: 38 92% 50%;          /* Warning amber */
+    --livrili-error: 0 84% 60%;             /* Error red */
 
-    /* Default theme */
+    /* Default theme based on Livrili colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 201 100% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 201 100% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 201 100% 14%;
     --primary: 201 100% 14%;
     --primary-foreground: 210 40% 98%;
     --secondary: 34 75% 91%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary-foreground: 201 100% 14%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 207 35% 58%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 355 83% 41%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 201 100% 14%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    
+    /* Enhanced shadows */
+    --shadow-brand: 0 10px 15px -3px rgba(0, 48, 73, 0.1), 0 4px 6px -2px rgba(0, 48, 73, 0.05);
+    --shadow-brand-lg: 0 25px 50px -12px rgba(0, 48, 73, 0.25);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --background: 201 100% 8%;
+    --foreground: 34 75% 91%;
+    --card: 201 100% 10%;
+    --card-foreground: 34 75% 91%;
+    --popover: 201 100% 10%;
+    --popover-foreground: 34 75% 91%;
     --primary: 207 35% 58%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-foreground: 201 100% 8%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 355 83% 41%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 207 35% 58%;
+    
+    --shadow-brand: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-brand-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -63,15 +77,29 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Font family utilities */
+  /* Enhanced Font family utilities */
   .font-inter {
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'cv02' 1, 'cv03' 1, 'cv04' 1, 'cv11' 1;
   }
   
   .font-arabic {
-    font-family: var(--font-cairo), 'Noto Sans Arabic', system-ui, sans-serif;
+    font-family: var(--font-cairo), 'Cairo', 'Noto Sans Arabic', 'Amiri', 'Scheherazade New', system-ui, sans-serif;
+    font-feature-settings: 'liga' 1, 'calt' 1, 'kern' 1;
+    line-height: 1.7; /* Better for Arabic text */
+  }
+  
+  /* Auto-detect Arabic text and apply appropriate font */
+  *[lang="ar"], .arabic-text {
+    font-family: var(--font-cairo), 'Cairo', 'Noto Sans Arabic', 'Amiri', system-ui, sans-serif;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.7;
   }
 
   /* RTL Support */
@@ -320,6 +348,335 @@
     100% {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Enhanced loading animations */
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  /* Success feedback animations */
+  .success-feedback {
+    animation: successPulse 0.5s ease-out;
+  }
+  
+  @keyframes successPulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+  
+  /* Error feedback animations */
+  .error-shake {
+    animation: shake 0.6s ease-out;
+  }
+  
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(2px);
+    }
+  }
+  
+  /* Enhanced touch feedback */
+  .enhanced-touch {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .enhanced-touch:active {
+    transform: scale(0.97);
+  }
+  
+  .enhanced-touch:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Smooth interactions */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Enhanced accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-4 focus:ring-livrili-prussian/20 focus:ring-offset-2;
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .professional-card {
+      @apply border-2 border-gray-900;
+    }
+    
+    .professional-button {
+      @apply border-2 border-current;
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-spin,
+    .animate-pulse,
+    .animate-bounce {
+      animation: none;
+    }
+    
+    .transition-all,
+    .transition-transform,
+    .transition-colors {
+      transition: none;
+    }
+  }
+  
+  /* Interactive states */
+  .interactive {
+    @apply transition-all duration-200 hover:scale-105 active:scale-95 tap-highlight-transparent;
+  }
+  
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, #003049 0%, #669BBC 100%);
+  }
+  
+  .gradient-secondary {
+    background: linear-gradient(135deg, #C1121F 0%, #FDF0D5 100%);
+  }
+  
+  /* Safe area handling */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Hide scrollbars for carousel components */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Toast progress animation */
+  @keyframes toast-progress {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
+  }
+
+  /* Enhanced hover effects */
+  .hover-lift {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Ripple effect */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  
+  .ripple:focus:not(:active):after,
+  .ripple:hover:not(:active):after {
+    animation: ripple 1s ease-out;
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 1;
+    }
+    20% {
+      transform: scale(25, 25);
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(40, 40);
+    }
+  }
+
+  /* Enhanced focus styles for accessibility */
+  .focus-visible {
+    @apply focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-livrili-prussian/20 focus-visible:ring-offset-2;
+  }
+  
+  /* Brand-specific utilities */
+  .text-brand-primary {
+    color: hsl(var(--livrili-prussian));
+  }
+  
+  .text-brand-secondary {
+    color: hsl(var(--livrili-fire));
+  }
+  
+  .text-brand-accent {
+    color: hsl(var(--livrili-air));
+  }
+  
+  .bg-brand-primary {
+    background-color: hsl(var(--livrili-prussian));
+  }
+  
+  .bg-brand-secondary {
+    background-color: hsl(var(--livrili-fire));
+  }
+  
+  .bg-brand-accent {
+    background-color: hsl(var(--livrili-air));
+  }
+  
+  .bg-brand-light {
+    background-color: hsl(var(--livrili-papaya));
+  }
+  
+  /* Brand gradients */
+  .gradient-brand-primary {
+    background: linear-gradient(135deg, hsl(var(--livrili-prussian)) 0%, hsl(var(--livrili-air)) 100%);
+  }
+  
+  .gradient-brand-secondary {
+    background: linear-gradient(135deg, hsl(var(--livrili-fire)) 0%, hsl(var(--livrili-barn)) 100%);
+  }
+  
+  .gradient-brand-accent {
+    background: linear-gradient(135deg, hsl(var(--livrili-air)) 0%, hsl(var(--livrili-papaya)) 100%);
+  }
+  
+  /* Brand shadows */
+  .shadow-brand {
+    box-shadow: var(--shadow-brand);
+  }
+  
+  .shadow-brand-lg {
+    box-shadow: var(--shadow-brand-lg);
+  }
+  
+  /* Professional B2B styling */
+  .professional-card {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-brand transition-all duration-300;
+  }
+  
+  .professional-button {
+    @apply font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-livrili-prussian/20;
+  }
+  
+  .professional-input {
+    @apply rounded-xl border-2 border-gray-200 focus:border-livrili-prussian focus:ring-4 focus:ring-livrili-prussian/20 transition-all duration-200;
+  }
+
+  /* Product comparison highlights */
+  .comparison-highlight {
+    position: relative;
+  }
+  
+  .comparison-highlight:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #fbbf24, #f59e0b, #fbbf24);
+    background-size: 200% 200%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: highlightGlow 2s ease-in-out infinite;
+  }
+  
+  @keyframes highlightGlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
     }
   }
 }

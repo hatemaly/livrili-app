@@ -11,11 +11,13 @@
   "dependencies": {
     "@livrili/database": "*",
     "@supabase/supabase-js": "^2.48.0",
+    "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@livrili/eslint-config": "*",
     "@livrili/typescript-config": "*",
+    "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.5",
     "typescript": "^5.7.2"
   }

@@ -1,12 +1,13 @@
-import { z } from 'zod'
-import { router, protectedProcedure, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
+import { z } from 'zod'
+
+import { router, protectedProcedure, adminProcedure } from '../trpc'
 
 export const usersRouter = router({
   // Get current user profile
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     const { data: user, error } = await ctx.supabase
-      .from('users')
+      .from('user_profiles')
       .select('*, retailers(*)')
       .eq('id', ctx.session.user.id)
       .single()
@@ -25,14 +26,14 @@ export const usersRouter = router({
   updateProfile: protectedProcedure
     .input(
       z.object({
+        username: z.string().optional(),
         full_name: z.string().optional(),
-        phone: z.string().optional(),
-        metadata: z.record(z.any()).optional(),
+        preferred_language: z.string().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const { data, error } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .update(input)
         .eq('id', ctx.session.user.id)
         .select()
@@ -48,11 +49,11 @@ export const usersRouter = router({
       return data
     }),
 
-  // Admin: List all users
+  // Admin: List all user profiles
   list: adminProcedure
     .query(async ({ ctx }) => {
       const { data, error } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('*, retailers(id, business_name)')
         .order('created_at', { ascending: false })
 
@@ -91,7 +92,7 @@ export const usersRouter = router({
 
       // Check if username is already taken
       const { data: existingUser } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('id')
         .eq('username', input.username)
         .single()
@@ -103,8 +104,8 @@ export const usersRouter = router({
         })
       }
 
-      // Create auth user first
-      const { data: authUser, error: authError } = await ctx.supabase.auth.admin.createUser({
+      // Create auth user first using admin client
+      const { data: authUser, error: authError } = await ctx.adminSupabase.auth.admin.createUser({
         email: `${input.username}@temp.local`, // Temporary email
         password: input.password,
         email_confirm: true,
@@ -117,14 +118,13 @@ export const usersRouter = router({
         })
       }
 
-      // Create user record
+      // Create user profile record
       const { data, error } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .insert({
           id: authUser.user.id,
           username: input.username,
           full_name: input.full_name,
-          phone: input.phone,
           role: input.role,
           retailer_id: input.retailer_id,
           is_active: input.is_active,
@@ -135,7 +135,7 @@ export const usersRouter = router({
 
       if (error) {
         // Clean up auth user if profile creation fails
-        await ctx.supabase.auth.admin.deleteUser(authUser.user.id)
+        await ctx.adminSupabase.auth.admin.deleteUser(authUser.user.id)
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error.message,
@@ -164,9 +164,9 @@ export const usersRouter = router({
     .mutation(async ({ input, ctx }) => {
       // Validate retailer_id if role is being changed to retailer or driver
       if (input.data.role && (input.data.role === 'retailer' || input.data.role === 'driver') && !input.data.retailer_id) {
-        // Get current user to check if retailer_id exists
+        // Get current user profile to check if retailer_id exists
         const { data: currentUser } = await ctx.supabase
-          .from('users')
+          .from('user_profiles')
           .select('retailer_id')
           .eq('id', input.id)
           .single()
@@ -180,7 +180,7 @@ export const usersRouter = router({
       }
 
       const { data, error } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .update(input.data)
         .eq('id', input.id)
         .select('*, retailers(id, business_name)')
@@ -202,6 +202,51 @@ export const usersRouter = router({
       return data
     }),
 
+  // Update own password (for authenticated users)
+  updateOwnPassword: protectedProcedure
+    .input(
+      z.object({
+        newPassword: z.string().min(8),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      // Verify user profile exists in our system
+      const { data: user, error: userError } = await ctx.supabase
+        .from('user_profiles')
+        .select('id, is_active')
+        .eq('id', ctx.session.user.id)
+        .single()
+
+      if (userError || !user) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        })
+      }
+
+      if (!user.is_active) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Account is inactive',
+        })
+      }
+
+      // Update password using admin API (user is already authenticated)
+      const { error: updateError } = await ctx.adminSupabase.auth.admin.updateUserById(
+        ctx.session.user.id,
+        { password: input.newPassword }
+      )
+
+      if (updateError) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: updateError.message,
+        })
+      }
+
+      return { success: true }
+    }),
+
   // Admin: Update user password
   updatePassword: adminProcedure
     .input(
@@ -211,15 +256,26 @@ export const usersRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { error } = await ctx.supabase.auth.admin.updateUserById(
+      // Update in Supabase Auth
+      const { error: authError } = await ctx.adminSupabase.auth.admin.updateUserById(
         input.id,
         { password: input.password }
       )
 
-      if (error) {
+      if (authError) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: error.message,
+          message: authError.message,
+        })
+      }
+
+      // Note: We no longer need to store temp_password in user_profiles
+      // The password is managed entirely by Supabase Auth
+
+      if (dbError) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update password in database',
         })
       }
 
@@ -230,7 +286,7 @@ export const usersRouter = router({
   getStats: adminProcedure
     .query(async ({ ctx }) => {
       const { data: users } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('role, is_active')
 
       const stats = {
@@ -260,7 +316,7 @@ export const usersRouter = router({
     )
     .query(async ({ input, ctx }) => {
       let query = ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('*, retailers(id, business_name)', { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(input.offset, input.offset + input.limit - 1)
@@ -294,7 +350,7 @@ export const usersRouter = router({
     }),
 
   // Get users by retailer
-  getByRetailer: protectedProcedure
+  getByRetailer: adminProcedure
     .input(
       z.object({
         retailerId: z.string().uuid()
@@ -302,7 +358,7 @@ export const usersRouter = router({
     )
     .query(async ({ input, ctx }) => {
       const { data: users, error } = await ctx.supabase
-        .from('users')
+        .from('user_profiles')
         .select('*')
         .eq('retailer_id', input.retailerId)
         .eq('is_active', true)

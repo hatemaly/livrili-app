@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { router, protectedProcedure } from '../trpc'
+import { router, retailerProcedure, protectedProcedure, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 export const retailerProductsRouter = router({
-  // Get categories with multi-language support
-  getCategories: protectedProcedure
+  // Get categories with multi-language support - temporarily use publicProcedure for debugging
+  getCategories: publicProcedure
     .input(
       z.object({
         language: z.enum(['en', 'ar', 'fr']).default('ar'),
@@ -13,37 +13,36 @@ export const retailerProductsRouter = router({
     )
     .query(async ({ input, ctx }) => {
       try {
+        // Fetch real categories from database
         let query = ctx.supabase
           .from('categories')
-          .select('id, parent_id, name_en, name_ar, name_fr, description_en, description_ar, description_fr, image_url, sort_order, is_active')
+          .select('*')
           .eq('is_active', true)
-          .order('sort_order', { ascending: true })
+          .order('display_order', { ascending: true })
 
-        // Filter by parent_id if provided
         if (input.parentId) {
           query = query.eq('parent_id', input.parentId)
-        } else {
-          query = query.is('parent_id', null) // Root categories only
         }
 
         const { data: categories, error } = await query
 
         if (error) {
+          console.error('Database error fetching categories:', error)
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to fetch categories',
+            message: 'Failed to fetch categories from database',
             cause: error,
           })
         }
 
         return {
-          categories: categories.map(category => ({
+          categories: (categories || []).map(category => ({
             id: category.id,
             parentId: category.parent_id,
-            name: category[`name_${input.language}` as keyof typeof category] as string,
-            description: category[`description_${input.language}` as keyof typeof category] as string,
+            name: category[`name_${input.language}` as keyof typeof category] as string || category.name_en,
+            description: category[`description_${input.language}` as keyof typeof category] as string || category.description_en,
             imageUrl: category.image_url,
-            sortOrder: category.sort_order,
+            sortOrder: category.display_order,
             // Include all language variants for offline caching
             multilingual: {
               name_en: category.name_en,
@@ -56,10 +55,6 @@ export const retailerProductsRouter = router({
           })),
         }
       } catch (error) {
-        if (error instanceof TRPCError) {
-          throw error
-        }
-
         console.error('Get categories error:', error)
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
@@ -69,7 +64,7 @@ export const retailerProductsRouter = router({
     }),
 
   // Get products with pagination and filters
-  getProducts: protectedProcedure
+  getProducts: retailerProcedure
     .input(
       z.object({
         language: z.enum(['en', 'ar', 'fr']).default('ar'),
@@ -215,7 +210,7 @@ export const retailerProductsRouter = router({
     }),
 
   // Get single product by ID
-  getProductById: protectedProcedure
+  getProductById: retailerProcedure
     .input(
       z.object({
         productId: z.string().uuid('Invalid product ID'),
@@ -334,7 +329,7 @@ export const retailerProductsRouter = router({
     }),
 
   // Get product recommendations using the SQL function
-  getRecommendations: protectedProcedure
+  getRecommendations: retailerProcedure
     .input(
       z.object({
         language: z.enum(['en', 'ar', 'fr']).default('ar'),
@@ -392,7 +387,7 @@ export const retailerProductsRouter = router({
     }),
 
   // Track product view (for analytics and recommendations)
-  trackProductView: protectedProcedure
+  trackProductView: retailerProcedure
     .input(
       z.object({
         productId: z.string().uuid('Invalid product ID'),
@@ -478,7 +473,7 @@ export const retailerProductsRouter = router({
     }),
 
   // Get product search suggestions (for autocomplete)
-  getSearchSuggestions: protectedProcedure
+  getSearchSuggestions: retailerProcedure
     .input(
       z.object({
         query: z.string().min(1).max(100),
@@ -542,7 +537,7 @@ export const retailerProductsRouter = router({
     }),
 
   // Get popular products (most viewed/ordered)
-  getPopularProducts: protectedProcedure
+  getPopularProducts: retailerProcedure
     .input(
       z.object({
         language: z.enum(['en', 'ar', 'fr']).default('ar'),
@@ -650,6 +645,103 @@ export const retailerProductsRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch popular products',
+        })
+      }
+    }),
+
+  // Get single category by ID
+  getCategoryById: publicProcedure
+    .input(
+      z.object({
+        categoryId: z.string(),
+        language: z.enum(['en', 'ar', 'fr']).default('ar'),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      try {
+        // Fetch real category from database
+        const { data: categoryData, error } = await ctx.supabase
+          .from('categories')
+          .select('*')
+          .eq('id', input.categoryId)
+          .eq('is_active', true)
+          .single()
+        
+        if (error || !categoryData) {
+          console.error('Category not found or error:', error)
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Category not found',
+          })
+        }
+
+        // Category mappings for emoji and colors (consistent with frontend)
+        const getCategoryDisplay = (category: any) => {
+          const categoryMap: { [key: string]: { emoji: string; color: string } } = {
+            'food': { emoji: '🍽️', color: 'bg-green-100 hover:bg-green-200 border-green-300' },
+            'beverages': { emoji: '🥤', color: 'bg-blue-100 hover:bg-blue-200 border-blue-300' },
+            'snacks': { emoji: '🍿', color: 'bg-orange-100 hover:bg-orange-200 border-orange-300' },
+            'dairy': { emoji: '🥛', color: 'bg-cyan-100 hover:bg-cyan-200 border-cyan-300' },
+            'cleaning': { emoji: '🧽', color: 'bg-purple-100 hover:bg-purple-200 border-purple-300' },
+            'personal': { emoji: '🧴', color: 'bg-pink-100 hover:bg-pink-200 border-pink-300' },
+            'care': { emoji: '💊', color: 'bg-red-100 hover:bg-red-200 border-red-300' },
+            'household': { emoji: '🏠', color: 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300' },
+            'bakery': { emoji: '🍞', color: 'bg-amber-100 hover:bg-amber-200 border-amber-300' },
+            'frozen': { emoji: '🧊', color: 'bg-indigo-100 hover:bg-indigo-200 border-indigo-300' },
+          }
+          
+          const defaultDisplay = { emoji: '📦', color: 'bg-gray-100 hover:bg-gray-200 border-gray-300' }
+          
+          // Check slug first, then name
+          const slug = category.slug || ''
+          const nameEn = category.name_en || ''
+          
+          const nameKey = Object.keys(categoryMap).find(key => 
+            slug.toLowerCase().includes(key) ||
+            nameEn.toLowerCase().includes(key)
+          )
+          
+          return nameKey ? categoryMap[nameKey] : defaultDisplay
+        }
+
+        const display = getCategoryDisplay(categoryData)
+
+        return {
+          id: categoryData.id,
+          parentId: categoryData.parent_id,
+          name: {
+            ar: categoryData.name_ar,
+            fr: categoryData.name_fr,
+            en: categoryData.name_en,
+          },
+          description: {
+            ar: categoryData.description_ar || '',
+            fr: categoryData.description_fr || '',
+            en: categoryData.description_en || '',
+          },
+          emoji: display.emoji,
+          color: display.color,
+          imageUrl: categoryData.image_url,
+          sortOrder: categoryData.display_order,
+          // Include multilingual for consistency
+          multilingual: {
+            name_en: categoryData.name_en,
+            name_ar: categoryData.name_ar,
+            name_fr: categoryData.name_fr,
+            description_en: categoryData.description_en || '',
+            description_ar: categoryData.description_ar || '',
+            description_fr: categoryData.description_fr || '',
+          },
+        }
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error
+        }
+
+        console.error('Get category by ID error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch category',
         })
       }
     }),

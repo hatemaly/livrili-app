@@ -1,11 +1,12 @@
 'use client'
 
+import { Button , useLanguage, useRTL } from '@livrili/ui'
 import React, { useState } from 'react'
-import { Button } from '@livrili/ui'
-import { useLanguage, useRTL } from '@livrili/ui'
+import { LivriliLogo, LivriliIcon } from '@/components/common/livrili-logo'
+import { BrandHeading, BrandAlert, BrandButton } from '@/components/common/brand-system'
 
 interface SimplifiedLoginFormProps {
-  onSubmit?: (username: string, password: string) => Promise<void>
+  onSubmit?: (email: string, password: string) => Promise<void>
   isLoading?: boolean
   error?: string
 }
@@ -15,78 +16,78 @@ export function SimplifiedLoginForm({
   isLoading = false, 
   error 
 }: SimplifiedLoginFormProps) {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [touched, setTouched] = useState({ username: false, password: false })
+  const [touched, setTouched] = useState({ email: false, password: false })
   
   const { t } = useLanguage()
   const { isRTL } = useRTL()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!username.trim() || !password.trim()) {
-      setTouched({ username: true, password: true })
+    if (!email.trim() || !password.trim()) {
+      setTouched({ email: true, password: true })
       return
     }
-    await onSubmit(username.trim(), password)
+    await onSubmit(email.trim(), password)
   }
 
-  const isFormValid = username.trim() && password.trim()
+  const isFormValid = email.trim() && password.trim()
 
   return (
-    <div className="w-full max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg space-y-6">
+    <div className="w-full max-w-sm mx-auto p-8 bg-white rounded-3xl shadow-2xl space-y-8 border border-gray-100">
       {/* Header with visual cue */}
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 mx-auto bg-livrili-prussian rounded-full flex items-center justify-center">
-          <span className="text-2xl text-white">🏪</span>
+      <div className="text-center space-y-4">
+        <div className="mb-4">
+          <LivriliLogo variant="primary" size="lg" className="mx-auto mb-4" priority />
         </div>
-        <h1 className="text-xl font-bold text-livrili-prussian">
-          {t('auth.login.title', 'دخول المتجر')}
-        </h1>
-        <p className="text-sm text-gray-600">
-          {t('auth.login.subtitle', 'ادخل بيانات متجرك')}
+        <LivriliIcon size={72} className="mx-auto shadow-lg" />
+        <BrandHeading level={2} className="mt-4">
+          {t('auth.login.title', 'Store Login')}
+        </BrandHeading>
+        <p className="text-gray-600">
+          {t('auth.login.subtitle', 'Enter your store credentials to continue')}
         </p>
       </div>
 
       {/* Error Message with visual indicator */}
       {error && (
-        <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-center space-x-3 rtl:space-x-reverse animate-pulse">
-          <span className="text-2xl">❌</span>
-          <span className="text-red-700 font-medium">{error}</span>
-        </div>
+        <BrandAlert type="error" title={t('auth.error', 'Login Error')}>
+          {error}
+        </BrandAlert>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Username Field */}
+        {/* Email Field */}
         <div className="space-y-2">
           <label className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-700">
-            <span className="text-lg">👤</span>
-            <span>{t('auth.username', 'اسم المستخدم')}</span>
+            <span className="text-lg">📧</span>
+            <span>{t('auth.email', 'Email')}</span>
           </label>
           <div className="relative">
             <input
-              type="text"
-              value={username}
+              type="email"
+              value={email}
               onChange={(e) => {
-                setUsername(e.target.value)
-                if (touched.username) setTouched(prev => ({ ...prev, username: false }))
+                setEmail(e.target.value)
+                if (touched.email) setTouched(prev => ({ ...prev, email: false }))
               }}
-              onBlur={() => setTouched(prev => ({ ...prev, username: true }))}
+              onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
               className={`
                 w-full h-14 px-4 text-lg rounded-xl border-2 transition-all duration-200
                 focus:outline-none focus:ring-4 focus:ring-livrili-prussian/20
-                ${touched.username && !username.trim() 
+                ${touched.email && !email.trim() 
                   ? 'border-red-300 bg-red-50' 
                   : 'border-gray-200 bg-gray-50 focus:border-livrili-prussian focus:bg-white'
                 }
                 ${isRTL ? 'text-right' : 'text-left'}
               `}
-              placeholder={t('auth.username.placeholder', 'اكتب اسم المستخدم هنا')}
+              placeholder={t('auth.email.placeholder', 'Enter your email address')}
               dir={isRTL ? 'rtl' : 'ltr'}
               disabled={isLoading}
             />
-            {touched.username && !username.trim() && (
+            {touched.email && !email.trim() && (
               <div className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 transform -translate-y-1/2">
                 <span className="text-red-500 text-lg">⚠️</span>
               </div>
@@ -98,7 +99,7 @@ export function SimplifiedLoginForm({
         <div className="space-y-2">
           <label className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-700">
             <span className="text-lg">🔒</span>
-            <span>{t('auth.password', 'كلمة المرور')}</span>
+            <span>{t('auth.password', 'Password')}</span>
           </label>
           <div className="relative">
             <input
@@ -118,7 +119,7 @@ export function SimplifiedLoginForm({
                 }
                 ${isRTL ? 'text-right' : 'text-left'}
               `}
-              placeholder={t('auth.password.placeholder', 'اكتب كلمة المرور هنا')}
+              placeholder={t('auth.password.placeholder', 'Enter your password')}
               dir={isRTL ? 'rtl' : 'ltr'}
               disabled={isLoading}
             />
@@ -142,50 +143,44 @@ export function SimplifiedLoginForm({
         </div>
 
         {/* Submit Button */}
-        <Button
+        <BrandButton
           type="submit"
-          variant="brand"
-          size="lg"
-          className={`
-            w-full h-16 text-lg font-bold rounded-xl transition-all duration-200
-            ${isFormValid 
-              ? 'transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl' 
-              : 'opacity-50 cursor-not-allowed'
-            }
-            ${isLoading ? 'animate-pulse' : ''}
-          `}
+          variant="primary"
+          size="xl"
+          className="w-full"
           disabled={!isFormValid || isLoading}
+          isLoading={isLoading}
+          icon={isLoading ? undefined : '🚪'}
         >
-          <div className="flex items-center justify-center space-x-3 rtl:space-x-reverse">
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>{t('auth.login.loading', 'جاري الدخول...')}</span>
-              </>
-            ) : (
-              <>
-                <span className="text-xl">🚪</span>
-                <span>{t('auth.login.button', 'دخول المتجر')}</span>
-              </>
-            )}
-          </div>
-        </Button>
+          {isLoading 
+            ? t('auth.login.loading', 'Logging in...') 
+            : t('auth.login.button', 'Enter Store')
+          }
+        </BrandButton>
       </form>
 
       {/* Help Section */}
-      <div className="text-center pt-4 border-t border-gray-100">
-        <p className="text-sm text-gray-500 mb-2">
-          {t('auth.help.title', 'تحتاج مساعدة؟')}
-        </p>
-        <div className="flex flex-col space-y-2">
-          <button className="flex items-center justify-center space-x-2 rtl:space-x-reverse text-livrili-prussian hover:text-livrili-fire transition-colors p-2 rounded-lg hover:bg-gray-50">
-            <span className="text-lg">📞</span>
-            <span className="text-sm font-medium">{t('auth.help.call', 'اتصل بنا')}</span>
-          </button>
-          <button className="flex items-center justify-center space-x-2 rtl:space-x-reverse text-livrili-prussian hover:text-livrili-fire transition-colors p-2 rounded-lg hover:bg-gray-50">
-            <span className="text-lg">💬</span>
-            <span className="text-sm font-medium">{t('auth.help.whatsapp', 'واتساب')}</span>
-          </button>
+      <div className="text-center pt-6 border-t border-livrili-papaya">
+        <BrandHeading level={4} color="gray" className="mb-4">
+          {t('auth.help.title', 'Need help?')}
+        </BrandHeading>
+        <div className="grid grid-cols-2 gap-3">
+          <BrandButton
+            variant="outline"
+            size="sm"
+            icon="📞"
+            className="text-xs"
+          >
+            {t('auth.help.call', 'Call us')}
+          </BrandButton>
+          <BrandButton
+            variant="ghost"
+            size="sm"
+            icon="💬"
+            className="text-xs"
+          >
+            {t('auth.help.whatsapp', 'WhatsApp')}
+          </BrandButton>
         </div>
       </div>
     </div>

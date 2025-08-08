@@ -8,7 +8,7 @@ import superjson from 'superjson'
 import type { AppRouter } from './root'
 
 export const api = createTRPCReact<AppRouter>()
-export const trpc = api // For backward compatibility
+export const trpc = api
 
 export function TRPCProvider({
   children,
@@ -25,8 +25,9 @@ export function TRPCProvider({
         httpBatchLink({
           url: apiUrl,
           headers() {
+            // Get the Supabase auth token
             const token = typeof window !== 'undefined' 
-              ? localStorage.getItem('supabase.auth.token')
+              ? localStorage.getItem('auth_token')
               : null
             
             return token ? { authorization: `Bearer ${token}` } : {}

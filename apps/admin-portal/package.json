@@ -4,10 +4,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
+    "dev:fresh": "rm -rf .next && next dev --port 3001",
+    "dev:turbo": "next dev --port 3001 --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "test:validate": "node run-test-validation.js",
+    "test:fix-round": "npm run test:validate"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
@@ -55,6 +64,7 @@
   "devDependencies": {
     "@livrili/eslint-config": "*",
     "@livrili/typescript-config": "*",
+    "@playwright/test": "^1.48.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@types/node": "^22.10.2",
     "@types/react": "^19.1.9",

@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Button } from '@livrili/ui'
+import Link from 'next/link'
 
 export default function SignUpSuccessPage() {
   return (

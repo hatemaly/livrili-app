@@ -9,20 +9,23 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@livrili/database": "*",
     "@livrili/auth": "*",
-    "@trpc/server": "^11.0.0-rc.678",
-    "@trpc/client": "^11.0.0-rc.678",
-    "@trpc/react-query": "^11.0.0-rc.678",
-    "@trpc/next": "^11.0.0-rc.678",
-    "@tanstack/react-query": "^5.62.10",
+    "@livrili/database": "*",
     "@supabase/supabase-js": "^2.48.0",
+    "@tanstack/react-query": "^5.62.10",
+    "@trpc/client": "^11.0.0-rc.678",
+    "@trpc/next": "^11.0.0-rc.678",
+    "@trpc/react-query": "^11.0.0-rc.678",
+    "@trpc/server": "^11.0.0-rc.678",
+    "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
     "superjson": "^2.2.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@livrili/eslint-config": "*",
     "@livrili/typescript-config": "*",
+    "@types/bcryptjs": "^2.4.6",
     "typescript": "^5.7.2"
   }
 }

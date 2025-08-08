@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure, adminProcedure } from '../trpc'
+import { router, adminProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 
 const tagSchema = z.object({
@@ -13,7 +13,7 @@ const tagUpdateSchema = tagSchema.partial()
 
 export const tagsRouter = router({
   // Get all tags with usage count and analytics
-  list: publicProcedure
+  list: adminProcedure
     .input(z.object({
       search: z.string().optional(),
       sortBy: z.enum(['name', 'usage_count', 'created_at']).default('usage_count'),
@@ -65,7 +65,7 @@ export const tagsRouter = router({
     }),
 
   // Get tag by ID or slug
-  getById: publicProcedure
+  getById: adminProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       // Try to find by ID first, then by slug
@@ -104,7 +104,7 @@ export const tagsRouter = router({
     }),
 
   // Search tags by name (for autocomplete)
-  search: publicProcedure
+  search: adminProcedure
     .input(z.object({
       query: z.string().min(1),
       limit: z.number().min(1).max(20).default(10),
@@ -135,7 +135,7 @@ export const tagsRouter = router({
     }),
 
   // Get tag suggestions based on product category
-  getSuggestionsByCategory: publicProcedure
+  getSuggestionsByCategory: adminProcedure
     .input(z.string().uuid())
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
@@ -152,7 +152,7 @@ export const tagsRouter = router({
     }),
 
   // Get products by tag
-  getProducts: publicProcedure
+  getProducts: adminProcedure
     .input(z.object({
       tagId: z.string(),
       offset: z.number().min(0).default(0),
@@ -177,7 +177,7 @@ export const tagsRouter = router({
     }),
 
   // Get popular tags (most used)
-  getPopular: publicProcedure
+  getPopular: adminProcedure
     .input(z.object({
       limit: z.number().min(1).max(20).default(10),
     }).optional())

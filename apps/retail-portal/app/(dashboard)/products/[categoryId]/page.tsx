@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { useParams } from 'next/navigation'
-import { ProductCard } from '../../../../components/products/product-card'
-import { CartButton } from '../../../../components/cart/cart-button'
-import { api } from '../../../../lib/trpc'
 import { useLanguage, useRTL } from '@livrili/ui'
+import { useRouter , useParams } from 'next/navigation'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'sonner'
+
+import { CartButton } from '../../../../components/cart/cart-button'
+import { ProductCard } from '../../../../components/products/product-card'
+import { api } from '../../../../lib/trpc'
+
 
 type FilterType = 'all' | 'in-stock' | 'low-stock' | 'out-of-stock'
 type SortType = 'popular' | 'price-asc' | 'price-desc' | 'name'
@@ -97,7 +98,7 @@ export default function ProductsPage() {
     },
     onError: () => {
       setIsLoadingMore(false)
-      toast.error(t('products.load_error', 'فشل في تحميل المنتجات'))
+      toast.error(t('products.load_error', 'Failed to load products'))
     }
   })
   
@@ -144,14 +145,14 @@ export default function ProductsPage() {
     onSuccess: (data, variables) => {
       refetchCart()
       const product = allProducts.find(p => p.id === variables.productId)
-      const productName = product?.name[language] || t('product.item', 'المنتج')
+      const productName = product?.name[language] || t('product.item', 'Product')
       
       // Show success feedback
       setAddToCartFeedback(productName)
       setTimeout(() => setAddToCartFeedback(null), 2000)
       
       toast.success(
-        t('cart.added_success', `تم إضافة ${productName} إلى السلة`),
+        t('cart.added_success', `Added ${productName} to cart`),
         {
           duration: 2000,
           position: isRTL ? 'top-left' : 'top-right'
@@ -160,7 +161,7 @@ export default function ProductsPage() {
     },
     onError: (error) => {
       toast.error(
-        error.message || t('cart.add_error', 'فشل في إضافة المنتج للسلة'),
+        error.message || t('cart.add_error', 'Failed to add product to cart'),
         {
           duration: 3000,
           position: isRTL ? 'top-left' : 'top-right'
@@ -193,7 +194,7 @@ export default function ProductsPage() {
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-livrili-prussian border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-livrili-prussian font-medium">
-            {t('products.loading', 'جاري تحميل المنتجات...')}
+            {t('products.loading', 'Loading products...')}
           </p>
         </div>
       </div>
@@ -214,13 +215,13 @@ export default function ProductsPage() {
             </button>
             <div className="flex-1">
               <h1 className="text-xl font-bold text-livrili-prussian">
-                {category?.name[language] || t('products.category', 'المنتجات')}
+                {category?.name[language] || t('products.category', 'Products')}
               </h1>
               <p className="text-sm text-gray-600">
-                {allProducts.length} {t('products.items_available', 'منتج متوفر')}
+                {allProducts.length} {t('products.items_available', 'products available')}
                 {hasMore && (
                   <span className="text-livrili-prussian font-medium ml-2 rtl:ml-0 rtl:mr-2">
-                    {t('products.load_more_available', '+ المزيد متاح')}
+                    {t('products.load_more_available', '+ More available')}
                   </span>
                 )}
               </p>
@@ -239,7 +240,7 @@ export default function ProductsPage() {
                   className="w-5 h-5 text-livrili-prussian bg-gray-100 border-gray-300 rounded focus:ring-livrili-prussian focus:ring-2"
                 />
                 <span className="text-sm font-medium text-gray-900">
-                  ✅ {t('products.filter.in_stock_only', 'المتوفر فقط')}
+                  ✅ {t('products.filter.in_stock_only', 'In stock only')}
                 </span>
               </label>
               
@@ -250,10 +251,10 @@ export default function ProductsPage() {
                 className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-livrili-prussian/20 focus:border-livrili-prussian"
                 dir={isRTL ? 'rtl' : 'ltr'}
               >
-                <option value="popular">🔥 {t('products.sort.popular', 'الأكثر طلباً')}</option>
-                <option value="name">🔤 {t('products.sort.name', 'الاسم')}</option>
-                <option value="price-asc">📈 {t('products.sort.price_low', 'السعر: الأقل أولاً')}</option>
-                <option value="price-desc">📉 {t('products.sort.price_high', 'السعر: الأعلى أولاً')}</option>
+                <option value="popular">🔥 {t('products.sort.popular', 'Most popular')}</option>
+                <option value="name">🔤 {t('products.sort.name', 'Name')}</option>
+                <option value="price-asc">📈 {t('products.sort.price_low', 'Price: Low to High')}</option>
+                <option value="price-desc">📉 {t('products.sort.price_high', 'Price: High to Low')}</option>
               </select>
             </div>
           </div>
@@ -287,19 +288,19 @@ export default function ProductsPage() {
               {isLoadingMore ? (
                 <div className="space-y-4">
                   <div className="w-8 h-8 border-4 border-livrili-prussian border-t-transparent rounded-full animate-spin mx-auto" />
-                  <p className="text-gray-600">{t('products.loading_more', 'جاري تحميل المزيد...')}</p>
+                  <p className="text-gray-600">{t('products.loading_more', 'Loading more...')}</p>
                 </div>
               ) : hasMore ? (
                 <button
                   onClick={loadMore}
                   className="px-6 py-3 bg-livrili-prussian text-white rounded-xl hover:bg-livrili-prussian/90 transition-colors font-medium"
                 >
-                  📦 {t('products.load_more', 'تحميل المزيد')}
+                  📦 {t('products.load_more', 'Load More')}
                 </button>
               ) : (
                 <div className="text-gray-500">
                   <span className="text-2xl mb-2 block">✅</span>
-                  <p>{t('products.all_loaded', 'تم عرض جميع المنتجات')}</p>
+                  <p>{t('products.all_loaded', 'All products loaded')}</p>
                 </div>
               )}
             </div>
@@ -310,17 +311,17 @@ export default function ProductsPage() {
               <span className="text-3xl text-gray-400">🔍</span>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t('products.no_products', 'لا توجد منتجات في هذه الفئة')}
+              {t('products.no_products', 'No products in this category')}
             </h3>
             <p className="text-gray-600 mb-6">
-              {t('products.try_different_filter', 'جرب فلتر مختلف أو تصفح فئات أخرى')}
+              {t('products.try_different_filter', 'Try a different filter or browse other categories')}
             </p>
             
             {/* Show Recommendations */}
             {recommendations && recommendations.length > 0 && (
               <div className="space-y-4">
                 <h4 className="text-md font-semibold text-livrili-prussian">
-                  💡 {t('products.recommendations', 'منتجات مقترحة')}
+                  💡 {t('products.recommendations', 'Recommended Products')}
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
                   {recommendations.slice(0, 4).map((product) => (
@@ -344,7 +345,7 @@ export default function ProductsPage() {
                         {product.name[language]}
                       </h5>
                       <p className="text-xs text-livrili-prussian font-bold">
-                        {new Intl.NumberFormat(language === 'ar' ? 'ar-DZ' : 'fr-DZ', {
+                        {new Intl.NumberFormat(language === 'ar' ? 'ar-DZ' : 'en-DZ', {
                           style: 'currency',
                           currency: 'DZD',
                           minimumFractionDigits: 0,
@@ -361,13 +362,13 @@ export default function ProductsPage() {
                 onClick={() => setFilters({ inStockOnly: false, sortBy: 'popular' })}
                 className="px-6 py-3 bg-livrili-prussian text-white rounded-xl hover:bg-livrili-prussian/90 transition-colors block mx-auto"
               >
-                {t('products.reset_filters', 'إعادة تعيين الفلاتر')}
+                {t('products.reset_filters', 'Reset Filters')}
               </button>
               <button
                 onClick={() => router.push('/categories')}
                 className="px-6 py-3 bg-white text-livrili-prussian border-2 border-livrili-prussian rounded-xl hover:bg-livrili-prussian/5 transition-colors block mx-auto"
               >
-                {t('products.browse_categories', 'تصفح الفئات الأخرى')}
+                {t('products.browse_categories', 'Browse Other Categories')}
               </button>
             </div>
           </div>
@@ -383,7 +384,7 @@ export default function ProductsPage() {
                   {category.name[language]}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  {category.description?.[language] || t('products.category_description', 'منتجات عالية الجودة')}
+                  {category.description?.[language] || t('products.category_description', 'High quality products')}
                 </p>
               </div>
             </div>
@@ -400,7 +401,7 @@ export default function ProductsPage() {
           <div className="bg-green-500 text-white px-4 py-3 rounded-xl shadow-lg flex items-center space-x-2 rtl:space-x-reverse animate-slide-down">
             <span className="text-lg">✅</span>
             <span className="font-medium">
-              {t('cart.added_to_cart', `تم إضافة ${addToCartFeedback} للسلة`)}
+              {t('cart.added_to_cart', `Added ${addToCartFeedback} to cart`)}
             </span>
           </div>
         </div>

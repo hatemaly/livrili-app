@@ -1,36 +1,64 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { api } from '../../../lib/trpc'
 import { useLanguage, useRTL } from '@livrili/ui'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
 import { CartButton } from '../../../components/cart/cart-button'
+import { PullToRefresh } from '../../../components/common/pull-to-refresh'
+import { HapticButton, TouchFeedback, useHapticFeedback } from '../../../components/common/haptic-button'
+import { OnlineStatus } from '../../../components/common/offline-indicator'
+import { BrandHeading, FeatureCard, StatCard, BrandSpinner, StatusBadge, BrandButton } from '../../../components/common/brand-system'
+import { LivriliIcon, BrandCard } from '../../../components/common/livrili-logo'
+import { api } from '../../../lib/trpc'
+
+
 
 export default function HomePage() {
   const router = useRouter()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const { isRTL } = useRTL()
+  const haptic = useHapticFeedback()
   
-  // Get retailer info and recent orders
-  const { data: retailerInfo, isLoading: isLoadingRetailer } = api.retailer.profile.get.useQuery()
-  const { data: recentOrders, isLoading: isLoadingOrders } = api.retailer.orders.getRecent.useQuery({
+  // Get retailer info and recent orders with error handling
+  const { data: retailerInfo, isLoading: isLoadingRetailer, refetch: refetchProfile } = api.retailer.profile.get.useQuery()
+  const { data: recentOrders, isLoading: isLoadingOrders, refetch: refetchOrders } = api.retailer.orders.getRecent.useQuery({
     limit: 3,
   })
   // Get cart data for the floating cart button
-  const { data: cartData } = api.retailer.cart.get.useQuery()
+  const { data: cartData, refetch: refetchCart } = api.retailer.cart.get.useQuery()
   
   const [touchedButton, setTouchedButton] = useState<string | null>(null)
+  const [timeOfDay, setTimeOfDay] = useState('')
+  
+  // Determine time of day greeting
+  useEffect(() => {
+    const hour = new Date().getHours()
+    if (hour < 12) {
+      setTimeOfDay(t('home.good_morning', 'Good Morning'))
+    } else if (hour < 17) {
+      setTimeOfDay(t('home.good_afternoon', 'Good Afternoon'))
+    } else {
+      setTimeOfDay(t('home.good_evening', 'Good Evening'))
+    }
+  }, [t])
 
   const handleButtonPress = (buttonId: string, action: () => void) => {
     setTouchedButton(buttonId)
+    haptic('medium')
     setTimeout(() => {
       action()
       setTouchedButton(null)
     }, 150)
   }
+  
+  const handleRefresh = async () => {
+    await Promise.all([refetchProfile(), refetchOrders(), refetchCart()])
+    haptic('success')
+  }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('ar-DZ', {
+    return new Intl.NumberFormat('en-DZ', {
       style: 'currency',
       currency: 'DZD',
       minimumFractionDigits: 0,
@@ -40,59 +68,60 @@ export default function HomePage() {
   if (isLoadingRetailer) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-livrili-prussian border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-livrili-prussian font-medium">
-            {t('home.loading', 'جاري التحميل...')}
-          </p>
+        <div className="text-center space-y-6">
+          <LivriliIcon size={64} className="mx-auto" />
+          <BrandSpinner size="lg" />
+          <BrandHeading level={3} className="animate-pulse">
+            {t('home.loading', 'Loading...')}
+          </BrandHeading>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <OnlineStatus>
+      <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-gray-50">
+        <div className="p-4 safe-top">
       {/* Header with Welcome & Credit Balance */}
-      <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-        <div className="flex items-center space-x-4 rtl:space-x-reverse mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-livrili-prussian to-livrili-prussian/80 rounded-full flex items-center justify-center shadow-lg">
-            <span className="text-2xl text-white">🏪</span>
-          </div>
+      <BrandCard variant="primary" className="mb-6">
+        <div className="flex items-center space-x-4 rtl:space-x-reverse mb-6">
+          <LivriliIcon size={64} className="shadow-xl" />
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-livrili-prussian">
-              {t('home.welcome', 'مرحبا')} {retailerInfo?.businessName || t('home.retailer', 'تاجر')}
-            </h1>
-            <p className="text-gray-600 text-sm">
-              {t('home.subtitle', 'اطلب منتجاتك وادر متجرك بسهولة')}
+            <BrandHeading level={2} className="mb-2">
+              {timeOfDay} {retailerInfo?.businessName || t('home.retailer', 'Retailer')}!
+            </BrandHeading>
+            <p className="text-gray-600">
+              {t('home.subtitle', 'Order your products and manage your store with ease')}
             </p>
           </div>
         </div>
         
         {/* Prominent Credit Balance */}
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border-2 border-dashed border-gray-200">
+        <div className="bg-gradient-to-r from-livrili-papaya/30 to-livrili-papaya/50 rounded-xl p-5 border-2 border-livrili-papaya">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 rtl:space-x-reverse">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
-                <span className="text-xl">💰</span>
+            <div className="flex items-center space-x-4 rtl:space-x-reverse">
+              <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-2xl">💰</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500 font-medium">{t('home.current_balance', 'الرصيد الحالي')}</p>
-                <p className={`text-2xl font-bold ${
-                  (retailerInfo?.balance || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+                <p className="text-sm text-livrili-prussian font-semibold mb-1">{t('home.current_balance', 'Current Balance')}</p>
+                <p className={`text-3xl font-bold ${
+                  (retailerInfo?.balance || 0) >= 0 ? 'text-green-600' : 'text-livrili-fire'
                 }`}>
                   {formatCurrency(retailerInfo?.balance || 0)}
                 </p>
               </div>
             </div>
-            <div className="text-right rtl:text-left">
-              <div className="text-xs text-gray-500">{t('home.credit_limit', 'الحد الائتماني')}</div>
-              <div className="text-sm font-semibold text-livrili-prussian">
+            <div className="text-right rtl:text-left bg-white/70 rounded-lg p-3">
+              <div className="text-xs text-livrili-prussian/70 font-medium">{t('home.credit_limit', 'Credit Limit')}</div>
+              <div className="text-lg font-bold text-livrili-prussian">
                 {formatCurrency(retailerInfo?.creditLimit || 0)}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </BrandCard>
 
       {/* Main Actions - 2x2 Grid */}
       <div className="grid grid-cols-2 gap-4 mb-6">
@@ -112,7 +141,7 @@ export default function HomePage() {
           </div>
           <div className="text-center">
             <h3 className="text-sm font-bold text-livrili-prussian">
-              {t('home.browse_products', 'تصفح المنتجات')}
+              {t('home.browse_products', 'Browse Products')}
             </h3>
           </div>
         </button>
@@ -133,7 +162,7 @@ export default function HomePage() {
           </div>
           <div className="text-center">
             <h3 className="text-sm font-bold text-livrili-fire">
-              {t('home.quick_reorder', 'إعادة طلب سريع')}
+              {t('home.quick_reorder', 'Quick Reorder')}
             </h3>
           </div>
         </button>
@@ -154,7 +183,7 @@ export default function HomePage() {
           </div>
           <div className="text-center">
             <h3 className="text-sm font-bold text-livrili-air">
-              {t('home.my_orders', 'طلباتي')}
+              {t('home.my_orders', 'My Orders')}
             </h3>
           </div>
         </button>
@@ -175,7 +204,7 @@ export default function HomePage() {
           </div>
           <div className="text-center">
             <h3 className="text-sm font-bold text-purple-600">
-              {t('home.my_profile', 'ملفي الشخصي')}
+              {t('home.my_profile', 'My Profile')}
             </h3>
           </div>
         </button>
@@ -186,13 +215,13 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-livrili-prussian flex items-center space-x-2 rtl:space-x-reverse">
             <span>📋</span>
-            <span>{t('home.recent_orders', 'الطلبات الأخيرة')}</span>
+            <span>{t('home.recent_orders', 'Recent Orders')}</span>
           </h3>
           <button
             onClick={() => router.push('/orders')}
             className="text-livrili-prussian text-sm font-medium hover:text-livrili-fire transition-colors"
           >
-            {t('home.view_all', 'عرض الكل')} {isRTL ? '←' : '→'}
+            {t('home.view_all', 'View All')} {isRTL ? '←' : '→'}
           </button>
         </div>
 
@@ -221,26 +250,26 @@ export default function HomePage() {
                     </span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString('ar-DZ')}
+                    {new Date(order.createdAt).toLocaleDateString('en-DZ')}
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-600">
-                    {order.items.length} {t('home.items', 'منتج')} • {formatCurrency(order.total)}
+                    {order.items.length} {t('home.items', 'items')} • {formatCurrency(order.total)}
                   </div>
                   <div className="flex space-x-2 rtl:space-x-reverse">
                     <button
                       onClick={() => router.push(`/orders/${order.id}`)}
                       className="px-3 py-1 bg-livrili-air/10 text-livrili-air text-xs font-medium rounded-lg hover:bg-livrili-air/20 transition-colors"
                     >
-                      {t('home.view', 'عرض')} 👁️
+                      {t('home.view', 'View')} 👁️
                     </button>
                     {order.status === 'delivered' && (
                       <button
                         onClick={() => router.push(`/cart?reorder=${order.id}`)}
                         className="px-3 py-1 bg-livrili-fire/10 text-livrili-fire text-xs font-medium rounded-lg hover:bg-livrili-fire/20 transition-colors"
                       >
-                        {t('home.reorder', 'إعادة طلب')} 🔄
+                        {t('home.reorder', 'Reorder')} 🔄
                       </button>
                     )}
                   </div>
@@ -254,13 +283,13 @@ export default function HomePage() {
               <span className="text-2xl text-gray-400">📋</span>
             </div>
             <p className="text-gray-500 mb-4">
-              {t('home.no_orders', 'لم تقم بأي طلبات بعد')}
+              {t('home.no_orders', 'No orders placed yet')}
             </p>
             <button
               onClick={() => router.push('/categories')}
               className="px-6 py-3 bg-livrili-prussian text-white rounded-xl hover:bg-livrili-prussian/90 transition-colors hover:scale-105 active:scale-95"
             >
-              {t('home.start_shopping', 'ابدأ التسوق')}
+              {t('home.start_shopping', 'Start Shopping')}
             </button>
           </div>
         )}
@@ -270,31 +299,33 @@ export default function HomePage() {
       <div className="grid grid-cols-2 gap-4 mt-6 mb-24">
         <div className="bg-white rounded-xl p-4 text-center shadow-sm">
           <div className="text-2xl mb-2">🎯</div>
-          <div className="text-xs text-gray-500">{t('home.this_month', 'هذا الشهر')}</div>
+          <div className="text-xs text-gray-500">{t('home.this_month', 'This Month')}</div>
           <div className="text-lg font-bold text-livrili-prussian">
             {retailerInfo?.monthlyOrders || 0}
           </div>
-          <div className="text-xs text-gray-600">{t('home.orders', 'طلب')}</div>
+          <div className="text-xs text-gray-600">{t('home.orders', 'Orders')}</div>
         </div>
         <div className="bg-white rounded-xl p-4 text-center shadow-sm">
           <div className="text-2xl mb-2">💰</div>
-          <div className="text-xs text-gray-500">{t('home.total_spent', 'إجمالي المصروف')}</div>
+          <div className="text-xs text-gray-500">{t('home.total_spent', 'Total Spent')}</div>
           <div className="text-sm font-bold text-livrili-prussian">
             {formatCurrency(retailerInfo?.totalSpent || 0)}
           </div>
         </div>
       </div>
 
-      {/* Floating Cart Button */}
-      <CartButton
-        items={cartData?.items || []}
-        totalAmount={cartData?.total || 0}
-        itemCount={cartData?.itemCount || 0}
-        onCartClick={() => router.push('/cart')}
-        onCheckout={() => router.push('/checkout')}
-        isFloating={true}
-        showQuickActions={true}
-      />
-    </div>
+          {/* Floating Cart Button */}
+          <CartButton
+            items={cartData?.items || []}
+            totalAmount={cartData?.total || 0}
+            itemCount={cartData?.itemCount || 0}
+            onCartClick={() => router.push('/cart')}
+            onCheckout={() => router.push('/checkout')}
+            isFloating={true}
+            showQuickActions={true}
+          />
+        </div>
+      </PullToRefresh>
+    </OnlineStatus>
   )
 }

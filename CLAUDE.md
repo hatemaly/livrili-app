@@ -4,128 +4,148 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Livrili is a B2B marketplace platform connecting retailers and suppliers in Algeria. The project consists of two main applications:
-1. **Admin Portal** - Internal operations management system
-2. **Users Portal** - Customer-facing application for retailers
+Livrili is a B2B e-commerce platform for Algeria, built as a monorepo using Turborepo with two main applications:
+- **Admin Portal** (port 3001): Internal management system for staff
+- **Retail Portal** (port 3002): PWA for retailers to place orders
 
-## Architecture & Technology Stack
+## Tech Stack
 
-### Recommended Stack (To be implemented)
-- **Frontend**: React/Next.js with TypeScript for both portals
-- **Backend**: Node.js with Express/NestJS or Python with FastAPI
-- **Database**: PostgreSQL for relational data, Redis for caching
-- **Mobile**: Progressive Web App (PWA) initially, native apps in Phase 2
-- **Languages**: Multi-language support (Arabic RTL, French, English)
+- **Framework**: Next.js 15.4.5 with App Router
+- **Language**: TypeScript 5.7.2
+- **Database**: Supabase (PostgreSQL)
+- **API**: tRPC v11
+- **Styling**: Tailwind CSS
+- **State Management**: React Query (TanStack Query)
+- **Authentication**: Supabase Auth
+- **Monorepo**: Turborepo with npm workspaces
 
-### Key Architectural Considerations
-- **Mobile-First Design**: Primary users access via mobile devices
-- **Offline Capabilities**: Critical for unreliable network conditions
-- **Multi-User Accounts**: Single retailer account with multiple users sharing credentials
-- **Cash-Based Economy**: Cash on delivery is primary payment method
-- **Performance**: Optimize for 3G/4G networks, <3s load times
+## Essential Commands
 
-## Development Commands
-
-Since the project is in initial setup phase, here are recommended commands to establish:
-
-### Initial Setup
 ```bash
-# Frontend setup (recommended)
-npx create-next-app@latest admin-portal --typescript --tailwind --app
-npx create-next-app@latest user-portal --typescript --tailwind --app
+# Development
+npm run dev              # Start all apps in dev mode
+npm run dev:force       # Clean start (removes .next, dist, cache)
 
-# Backend setup (Node.js option)
-npm init -y
-npm install express typescript @types/node @types/express
-npm install -D nodemon ts-node
+# Individual apps
+cd apps/admin-portal && npm run dev     # Admin portal only (port 3001)
+cd apps/retail-portal && npm run dev    # Retail portal only (port 3002)
 
-# Backend setup (Python option)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install fastapi uvicorn sqlalchemy alembic
+# Build & Production
+npm run build           # Build all apps
+npm run typecheck      # Type check entire monorepo
+npm run lint           # Lint all packages
+npm run format         # Format code with Prettier
+
+# Clean
+npm run clean          # Clean all build artifacts and node_modules
 ```
 
-### Future Development Commands
-```bash
-# Frontend
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run test         # Run tests
-npm run lint         # Run linter
+## Architecture
 
-# Backend
-npm run dev          # Start dev server with hot reload
-npm run build        # Compile TypeScript
-npm run start        # Start production server
-npm run test         # Run test suite
+### Monorepo Structure
+```
+apps/
+  admin-portal/        # Next.js admin dashboard
+  retail-portal/       # Next.js PWA for retailers
+packages/
+  api/                # tRPC API routers and business logic
+  auth/               # Shared authentication utilities
+  database/           # Supabase client and types
+  ui/                 # Shared UI components
+  utils/              # Shared utilities
+  i18n/               # Internationalization
 ```
 
-## Core Business Logic
+### API Architecture (tRPC)
 
-### User Types & Permissions
-1. **Admin Users**: Full system access, order management, user approval
-2. **Retailers**: Browse products, place orders, manage credit/debit
-3. **Drivers**: Delivery management, cash collection (future)
+The API uses tRPC with routers organized by domain:
+- **Retailer-specific routers**: `retailer.profile`, `retailer.cart`, `retailer.products`, `retailer.orders`, `retailer.signup`
+- **Admin routers**: `users`, `products`, `categories`, `retailers`, `orders`, `analytics`, `payments`, `deliveries`, `suppliers`
+- **Shared routers**: `communications`, `intelligence`, `reports`, `tags`
 
-### Critical Workflows
-1. **Retailer Onboarding**: Registration → Document Upload → Admin Approval → Account Activation
-2. **Order Flow**: Browse → Add to Cart → Checkout → Admin Processing → Delivery → Cash Collection
-3. **Credit Management**: Credit Limit Assignment → Usage Tracking → Payment Collection → Overdue Management
+API entry point: `packages/api/src/root.ts`
 
-### Key Features to Implement
-- **Authentication**: Username/password with admin-managed passwords
-- **Product Catalog**: FMCG categories with multi-language support
-- **Order Management**: Manual order creation, modification, tracking
-- **Delivery Tracking**: Driver assignment, route optimization
-- **Financial Management**: Cash tracking, credit limits, invoicing
+### Database
 
-## Data Models (Conceptual)
+Using Supabase with PostgreSQL. Key tables include:
+- `retailers`: Store/retailer information
+- `products`: Product catalog
+- `categories`: Product categories
+- `orders`: Order management
+- `order_items`: Order line items
+- `users`: System users (admin staff)
 
-### Core Entities
-- **Users**: id, username, password, role, retailer_id, created_at
-- **Retailers**: id, business_name, documents, credit_limit, balance, status
-- **Products**: id, name_ar, name_fr, name_en, price, stock, category_id
-- **Orders**: id, retailer_id, items, total, status, delivery_date
-- **Payments**: id, order_id, amount, type (cash/credit), collected_at
+## Development Guidelines
 
-## Important Business Rules
+### When Using Sub-Agents
+Always leverage sub-agents for:
+- Complex multi-file refactoring
+- Performance optimization analysis
+- Security audits
+- Test generation and fixes
+- Documentation updates across multiple files
 
-1. **Single Supplier Model**: Platform operates with one supplier initially
-2. **Shared Accounts**: Multiple users can access one retailer account
-3. **Activity Tracking**: Log all actions with user identification
-4. **Credit System**: Retailers have credit limits and can go into debit
-5. **Cash Primary**: Cash on delivery is the main payment method
-6. **Multi-Language**: All content must support Arabic, French, and English
+### When Using MCPs
+1. **Supabase MCP**: Use for all database operations (schema changes, data manipulation, queries)
+2. **Web Development MCPs**: Use for browser testing, performance audits, SEO analysis
+3. **Testing MCPs**: Use for E2E testing, accessibility testing, visual regression
 
-## UI/UX Guidelines
+### Important Principles
+1. **No backward compatibility**: Always implement fresh, modern approaches
+2. **No migration plans**: Unless explicitly requested, implement changes directly
+3. **Use latest patterns**: Leverage Next.js 15 App Router, React 19, server components
+4. **Prefer server-side**: Use server components and server actions where possible
 
-Follow the brand identity:
-- **Primary Color**: Prussian Blue (#003049)
-- **Secondary Color**: Fire Brick (#C1121F)
-- **Accent Colors**: Air Blue (#669BBC), Papaya Whip (#FDF0D5)
-- **Typography**: System fonts with Arabic support
-- **Logo**: Box icon with checkmark + "Livrili" text
+### Authentication Flow
+- Supabase Auth handles all authentication
+- Admin portal: Email/password for staff (role: 'admin')
+- Retail portal: Email/password for retailers (role: 'retailer')
+- Auth state managed via Supabase SSR package
+- Role-based access control via user_profiles table
 
-## Performance Requirements
+### State Management
+- Server state: tRPC with React Query
+- Client state: React hooks and context where needed
+- Form state: React Hook Form with Zod validation
 
-- **Load Time**: <3s on 3G, <1s on WiFi
-- **Bundle Size**: <500KB initial, <2MB total
-- **Offline Mode**: Cache critical data for offline access
-- **API Response**: <200ms for critical operations
+### Styling Conventions
+- Tailwind CSS for all styling
+- Component variants using class-variance-authority (CVA)
+- Responsive design with mobile-first approach
+- Dark mode support via Tailwind
 
-## Security Considerations
+### Environment Variables
+Key variables in `.env.local`:
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Public anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY`: Server-side service role key
 
-- **Authentication**: Implement secure password hashing
-- **Authorization**: Role-based access control (RBAC)
-- **Data Protection**: Encrypt sensitive data
-- **Session Management**: Secure session handling
-- **Input Validation**: Validate all user inputs
-- **API Security**: Implement rate limiting and CORS
+### PWA Configuration
+Retail portal is configured as a PWA with:
+- Service worker via next-pwa
+- Offline support
+- App manifest for installability
 
-## Development Priorities
+### Testing Approach
+Testing infrastructure has been removed per cleanup. When implementing tests:
+- Use the testing MCP for E2E and integration tests
+- Focus on critical user paths and business logic
+- No need for backward compatibility in test implementations
 
-1. **Phase 1**: Basic admin portal with user management and product catalog
-2. **Phase 2**: Retailer portal with ordering functionality
-3. **Phase 3**: Credit system and financial management
-4. **Phase 4**: Delivery tracking and driver management
-5. **Phase 5**: Analytics and reporting dashboards
+### API Patterns
+- All API calls go through tRPC
+- Use procedures with proper input validation (Zod)
+- Implement optimistic updates for better UX
+- Handle errors gracefully with user-friendly messages
+
+### Performance Considerations
+- Use React Query for caching and background refetching
+- Implement code splitting and lazy loading
+- Optimize images with Next.js Image component
+- Use server components to reduce client bundle size
+
+### Security Practices
+- Row-level security (RLS) in Supabase
+- Input validation with Zod schemas
+- Secure session management via Supabase Auth
+- Environment variables for sensitive configuration

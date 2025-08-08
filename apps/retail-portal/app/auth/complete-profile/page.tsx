@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button, Input, Label } from '@livrili/ui'
-import { useAuthContext } from '@livrili/auth'
-import { AuthGuard } from '@livrili/auth'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
+import { CustomAuthGuard } from '@/components/auth/custom-auth-guard'
+import { useAuth } from '@/lib/supabase-auth'
 
 export default function CompleteProfilePage() {
   const router = useRouter()
-  const { user, completeOAuthProfile } = useAuthContext()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
@@ -22,34 +23,16 @@ export default function CompleteProfilePage() {
     setError('')
     setLoading(true)
 
-    if (!completeOAuthProfile) {
-      setError('Profile completion not available')
-      setLoading(false)
-      return
-    }
-
-    const { error } = await completeOAuthProfile(
-      formData.username,
-      formData.businessName,
-      formData.phone
-    )
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
-    }
-
-    // If business name was provided, show success page
-    if (formData.businessName) {
-      router.push('/signup/success')
-    } else {
-      router.push('/dashboard')
-    }
+    // TODO: Implement profile completion API call
+    setError('Profile completion functionality not yet implemented')
+    setLoading(false)
+    
+    // For now, just redirect to dashboard
+    // router.push('/dashboard')
   }
 
   return (
-    <AuthGuard requireAuth>
+    <CustomAuthGuard requireAuth>
       <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div>
@@ -57,7 +40,7 @@ export default function CompleteProfilePage() {
               Complete Your Profile
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              Welcome, {user?.fullName || user?.email}! Please complete your profile to continue.
+              Welcome, {user?.full_name || user?.username}! Please complete your profile to continue.
             </p>
           </div>
           
@@ -127,6 +110,6 @@ export default function CompleteProfilePage() {
           </form>
         </div>
       </div>
-    </AuthGuard>
+    </CustomAuthGuard>
   )
 }

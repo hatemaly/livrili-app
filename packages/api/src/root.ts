@@ -1,10 +1,9 @@
 import { router } from './trpc'
-import { authRouter } from './routers/auth'
-import { retailerAuthRouter } from './routers/retailer-auth'
+import { retailerRouter } from './routers/retailer'
 import { retailerCartRouter } from './routers/retailer-cart'
+import { retailerCartAliasRouter } from './routers/retailer-cart-aliases'
 import { retailerProductsRouter } from './routers/retailer-products'
 import { retailerOrdersRouter } from './routers/retailer-orders'
-import { retailerSignupRouter } from './routers/retailer-signup'
 import { usersRouter } from './routers/users'
 import { productsRouter } from './routers/products'
 import { categoriesRouter } from './routers/categories'
@@ -20,12 +19,12 @@ import { tagsRouter } from './routers/tags'
 import { suppliersRouter } from './routers/suppliers'
 
 export const appRouter = router({
-  auth: authRouter,
-  retailerAuth: retailerAuthRouter,
-  retailerCart: retailerCartRouter,
-  retailerProducts: retailerProductsRouter,
-  retailerOrders: retailerOrdersRouter,
-  retailerSignup: retailerSignupRouter,
+  retailer: router({
+    profile: retailerRouter.profile,
+    cart: retailerCartAliasRouter,
+    products: retailerProductsRouter,
+    orders: retailerOrdersRouter,
+  }),
   users: usersRouter,
   products: productsRouter,
   categories: categoriesRouter,

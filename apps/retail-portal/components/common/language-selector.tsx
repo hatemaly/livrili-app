@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
 import { useLanguage, type Language } from '@livrili/ui'
+import React, { useState } from 'react'
 
 interface LanguageOption {
   code: Language
@@ -229,8 +229,8 @@ export function LanguageSelector({
                 <span>💡</span>
                 <span>
                   {isRTL 
-                    ? 'تم تغيير اتجاه النص تلقائياً'
-                    : 'La langue change automatiquement la direction du texte'
+                    ? 'Text direction changed automatically'
+                    : 'Language automatically changes text direction'
                   }
                 </span>
               </div>

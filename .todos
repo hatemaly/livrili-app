@@ -1,0 +1,71 @@
+# Admin Portal Test Fix Campaign - Round 2
+## Target: 95%+ Pass Rate (Currently 78.3%)
+
+## Multi-Agent Task Coordination Plan
+
+### Phase 1: Test Infrastructure Analysis & Fixes
+**Agent**: test-writer-fixer
+**Priority**: Critical
+**Tasks**:
+- Analyze all failing test selectors vs actual UI elements
+- Update timeout configurations for CI environment
+- Fix element selector mismatches (missing h1 tags, incorrect selectors)
+- Implement robust wait strategies for dynamic content
+
+### Phase 2: UI Validation & Bug Fixes
+**Agent**: frontend-developer
+**Priority**: High
+**Tasks**:
+- Validate all expected UI elements exist in actual pages
+- Fix any missing h1 tags or structural elements
+- Ensure consistent element structure across all admin pages
+- Verify accessibility and semantic HTML compliance
+
+### Phase 3: Database & Test Data Management
+**Agent**: backend-architect
+**Priority**: High
+**Tasks**:
+- Clean and reset test database to known good state
+- Create comprehensive test data fixtures
+- Ensure proper user roles and permissions exist
+- Validate database constraints and relationships
+
+### Phase 4: Performance Optimization
+**Agent**: performance-benchmarker
+**Priority**: Medium
+**Tasks**:
+- Profile slow-loading admin portal components
+- Optimize test execution timing and parallelization
+- Identify and fix performance bottlenecks in CI
+- Implement smart caching strategies for tests
+
+### Phase 5: Session Persistence & Auth Testing
+**Agent**: test-writer-fixer
+**Priority**: High
+**Tasks**:
+- Redesign session persistence test strategies
+- Implement proper auth state validation
+- Fix login/logout flow testing
+- Validate token refresh and session timeout scenarios
+
+### Phase 6: Final Validation & Reporting
+**Agent**: test-writer-fixer
+**Priority**: Critical
+**Tasks**:
+- Execute complete test suite with all fixes
+- Generate detailed pass/fail analysis report
+- Document remaining issues (if any)
+- Provide recommendations for future test stability
+
+## Success Criteria:
+- ✅ 95%+ test pass rate (22/23 tests minimum)
+- ✅ All selector mismatches resolved
+- ✅ Timeout issues eliminated
+- ✅ Session persistence properly validated
+- ✅ Performance variations stabilized
+
+## Execution Order:
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
+
+Estimated Timeline: 2-3 hours total
+Critical Path: Test Infrastructure → UI Fixes → Final Validation
